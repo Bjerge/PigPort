@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="30" height="30" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="Tezture Tiles" tilewidth="64" tileheight="64">
+  <image source="Tezture Tiles.png" width="512" height="640"/>
+ </tileset>
+ <layer name="background" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzt0bENADAIA0E3Tgf7jxtGSBqQ0BfWNzQnLOnU3Nyo5UC7nXjx4sWLd4/XQ974vOe/ePHixYv3tRfTUSFl
+  </data>
+ </layer>
+ <layer name="coll" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJwTZWBgYKIzFoXS9AYw+0ftHXn2YkuHpJhJDCbWPGqpGyr2Uiv80NVxATE3EPMQ6RZywWBMz8PZXkryF7HmYxPHpYca9uJzz2CzlxqYVHspAYTMHAr28gOxwADYyw7EHBTYy4iE6WkvuvyovdSxF18+ppW9xLprMNtLSv4lxl5YH4meGGQnAK71ApA=
+  </data>
+ </layer>
+ <layer name="decoration" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjcQBSLmBqR6igBYkTai00dte2lRB2t7ZUFYkEoTQ4gNt6wqZMk085RMPIAtrw7CkbBKBgFo2AUjIKhAwQHyN6R0N4EAIkkAdk=
+  </data>
+ </layer>
+ <objectgroup name="movingPlatform" width="30" height="30">
+  <object x="993" y="415"/>
+  <object x="960" y="927"/>
+  <object x="1058" y="1540"/>
+  <object x="362" y="1510"/>
+ </objectgroup>
+ <objectgroup name="trapEasy" width="30" height="30">
+  <object x="735" y="543"/>
+  <object x="800" y="542"/>
+  <object x="864" y="543"/>
+  <object x="929" y="542"/>
+  <object x="993" y="543"/>
+  <object x="1056" y="542"/>
+  <object x="1123" y="543"/>
+  <object x="1184" y="542"/>
+  <object x="1248" y="542"/>
+  <object x="605" y="1054"/>
+  <object x="542" y="1055"/>
+  <object x="478" y="1054"/>
+  <object x="672" y="1055"/>
+  <object x="929" y="1055"/>
+  <object x="1056" y="1055"/>
+  <object x="864" y="1056"/>
+  <object x="1123" y="1056"/>
+  <object x="993" y="1056"/>
+  <object x="800" y="1055"/>
+  <object x="1378" y="1054"/>
+  <object x="1313" y="1055"/>
+  <object x="1442" y="1055"/>
+  <object x="1249" y="1054"/>
+  <object x="737" y="1055"/>
+  <object x="1185" y="1054"/>
+ </objectgroup>
+ <objectgroup name="fairyCage" width="30" height="30">
+  <object x="992" y="223">
+   <ellipse/>
+  </object>
+  <object x="928" y="735">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="playerSpawn" width="30" height="30">
+  <object x="1629" y="291">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="playerEnd" width="30" height="30">
+  <object x="222" y="1766">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="enemyEasy" width="30" height="30">
+  <object x="486" y="1754"/>
+  <object x="296" y="1758"/>
+ </objectgroup>
+ <objectgroup name="fairyDustEasy" width="30" height="30">
+  <object x="986" y="278">
+   <ellipse/>
+  </object>
+  <object x="288" y="606">
+   <ellipse/>
+  </object>
+  <object x="356" y="856">
+   <ellipse/>
+  </object>
+  <object x="1436" y="350">
+   <ellipse/>
+  </object>
+  <object x="1622" y="860">
+   <ellipse/>
+  </object>
+  <object x="1056" y="1424">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>

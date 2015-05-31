@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="30" height="16" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="Tezture Tiles" tilewidth="64" tileheight="64">
+  <image source="Tezture Tiles.png" width="512" height="640"/>
+ </tileset>
+ <tileset firstgid="81" name="guideTexture" tilewidth="64" tileheight="64">
+  <image source="guideTexture.png" width="768" height="640"/>
+ </tileset>
+ <layer name="background" width="30" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjZWBgYANiVjrTvEDMNwA0vf056t9R/476d9S/o/5F0Kx4+CA20zDzLz4aACEXEbs=
+  </data>
+ </layer>
+ <layer name="coll" width="30" height="16">
+  <data encoding="base64" compression="zlib">
+   eJwTZWBgYKIzFgViZgbiAQsJavEBxlF7KbKXiU72ovOx2csPxAJk2MvIgEiH6GpB9nIBMTcQ8+Cwlx2IOciwl9I4JcVeFjQ19LIXH8BVFtDaXlxuIdVeXGmGVHtx2U1Le5kHyF588TxQ9uIqN+hdB8LqQQCNhQIn
+  </data>
+ </layer>
+ <layer name="info" width="30" height="16" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjIJRQE+QC8R5QJwPxAUD7JZRMHAAAH8NAbs=
+  </data>
+ </layer>
+ <layer name="dec_lvl1" width="30" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBi8QG0I6qUn4CRBrTIQqwCxKhl6TYHYjAT11AK2QGw3APZSCqQH2gEDBMRwsEkB5IQdPnuR+dTO1wNtrzQBe6kNsPlXkwR7BbGIyULFZUm015AEeyVJFKcnAACTtQTS
+  </data>
+ </layer>
+ <layer name="dec_lvl2" width="30" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjALaAqaBdsAoGFAgi0aPAggAAEw4AD0=
+  </data>
+ </layer>
+ <objectgroup name="enemyHard" width="30" height="16">
+  <object x="890" y="874">
+   <ellipse/>
+  </object>
+  <object x="956" y="536">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="trapHard" width="30" height="16">
+  <object x="992" y="286">
+   <ellipse/>
+  </object>
+  <object x="1249" y="223">
+   <ellipse/>
+  </object>
+  <object x="417" y="927">
+   <ellipse/>
+  </object>
+  <object x="481" y="926">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fairyDustHard" width="30" height="16">
+  <object x="666" y="346">
+   <ellipse/>
+  </object>
+  <object x="1120" y="346">
+   <ellipse/>
+  </object>
+  <object x="1624" y="284">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="enemyMedium" width="30" height="16">
+  <object x="794" y="882"/>
+ </objectgroup>
+ <objectgroup name="trapMedium" width="30" height="16">
+  <object x="1054" y="350">
+   <ellipse/>
+  </object>
+  <object x="415" y="926">
+   <ellipse/>
+  </object>
+  <object x="480" y="924">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fairyDustMedium" width="30" height="16">
+  <object x="1042" y="924">
+   <ellipse/>
+  </object>
+  <object x="346" y="472">
+   <ellipse/>
+  </object>
+  <object x="668" y="344">
+   <ellipse/>
+  </object>
+  <object x="252" y="912">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="enemyEasy" width="30" height="16"/>
+ <objectgroup name="trapEasy" width="30" height="16">
+  <object x="868" y="926"/>
+  <object x="482" y="930"/>
+ </objectgroup>
+ <objectgroup name="fairyDustEasy" width="30" height="16">
+  <object x="930" y="924">
+   <ellipse/>
+  </object>
+  <object x="1078" y="532">
+   <ellipse/>
+  </object>
+  <object x="604" y="342">
+   <ellipse/>
+  </object>
+  <object x="354" y="470">
+   <ellipse/>
+  </object>
+  <object x="1044" y="920">
+   <ellipse/>
+  </object>
+  <object x="1122" y="336">
+   <ellipse/>
+  </object>
+  <object x="1568" y="286">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="playerEnd" width="30" height="16">
+  <object x="1760" y="885">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="playerSpawn" width="30" height="16">
+  <object x="1374" y="883">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fairyCage" width="30" height="16">
+  <object x="1565" y="157">
+   <ellipse/>
+  </object>
+  <object x="606" y="220">
+   <ellipse/>
+  </object>
+  <object x="990" y="799">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>

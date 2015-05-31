@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="30" height="30" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="Tezture Tiles" tilewidth="64" tileheight="64">
+  <image source="Tezture Tiles.png" width="512" height="640"/>
+ </tileset>
+ <layer name="background" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzyEOACAMBMGmCTj4/3OpQeOKGbE5eZmMiPzUrlbj3t9Zjcbl5eXl5eXl5eXl5eV9eX90ACiqHgE=
+  </data>
+ </layer>
+ <layer name="decoration" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJxjYBg8QG2Q22sKxGYDYK8tENsNgL3UBkPNXjkK1RBjryyRbiHFDaT6lxh/EgNGWvyOVECNNIsPUBrmo3GGCQQHyF7JAbKXHCBFgV5Kyj562ctJpL3o6kAAX54ntTxQIlH9KBgFyABXWUbt9jk6wFWWUbt9PpAAAJ9LBc8=
+  </data>
+ </layer>
+ <layer name="coll" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJxjYmBgYBogTG8wai9uNdSMT2r6lxRzsLljIOylBAwGe6mRf4l112Dw73CzF5ueoZh/R+2ljTkDbS85ZctgaW+MpHQ1au/A2MsFxNxAzAPEQkAsDMQiNLKXFDBqL33tHQgMAJKQAek=
+  </data>
+ </layer>
+ <objectgroup name="enemyHard" width="30" height="30"/>
+ <objectgroup name="trapHard" width="30" height="30"/>
+ <objectgroup name="fairdyDustHard" width="30" height="30"/>
+ <objectgroup name="enemyMedium" width="30" height="30"/>
+ <objectgroup name="trapMedium" width="30" height="30"/>
+ <objectgroup name="fairyDustMedium" width="30" height="30"/>
+ <objectgroup name="enemyEasy" width="30" height="30">
+  <object x="800" y="1760">
+   <ellipse/>
+  </object>
+  <object x="1567" y="1759">
+   <ellipse/>
+  </object>
+  <object x="1536" y="1464">
+   <ellipse/>
+  </object>
+  <object x="306" y="991">
+   <ellipse/>
+  </object>
+  <object x="855" y="170">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="trapEasy" width="30" height="30">
+  <object x="96" y="1119">
+   <ellipse/>
+  </object>
+  <object x="162" y="1119">
+   <ellipse/>
+  </object>
+  <object x="224" y="1119">
+   <ellipse/>
+  </object>
+  <object x="292" y="1120">
+   <ellipse/>
+  </object>
+  <object x="352" y="1118">
+   <ellipse/>
+  </object>
+  <object x="416" y="1120">
+   <ellipse/>
+  </object>
+  <object x="480" y="1118">
+   <ellipse/>
+  </object>
+  <object x="543" y="1119">
+   <ellipse/>
+  </object>
+  <object x="607" y="1118">
+   <ellipse/>
+  </object>
+  <object x="1184" y="223">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fairyDustEasy" width="30" height="30">
+  <object x="497" y="1809">
+   <ellipse/>
+  </object>
+  <object x="1052" y="1803">
+   <ellipse/>
+  </object>
+  <object x="1330" y="1803">
+   <ellipse/>
+  </object>
+  <object x="1379" y="1500">
+   <ellipse/>
+  </object>
+  <object x="1691" y="1500">
+   <ellipse/>
+  </object>
+  <object x="1118" y="989">
+   <ellipse/>
+  </object>
+  <object x="863" y="734">
+   <ellipse/>
+  </object>
+  <object x="541" y="539">
+   <ellipse/>
+  </object>
+  <object x="219" y="349">
+   <ellipse/>
+  </object>
+  <object x="1496" y="164">
+   <ellipse/>
+  </object>
+  <object x="350" y="662">
+   <ellipse/>
+  </object>
+  <object x="592" y="196">
+   <ellipse/>
+  </object>
+  <object x="1756" y="452">
+   <ellipse/>
+  </object>
+  <object x="1316" y="718">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fireArrowSpawn" width="30" height="30">
+  <object x="104" y="932"/>
+  <object x="1807" y="671">
+   <ellipse/>
+  </object>
+  <object x="1110" y="552">
+   <ellipse/>
+  </object>
+  <object x="1254" y="420"/>
+ </objectgroup>
+ <objectgroup name="movingPlatform" width="30" height="30">
+  <object x="560" y="1515"/>
+ </objectgroup>
+ <objectgroup name="fairyCage" width="30" height="30">
+  <object x="1568" y="1375">
+   <ellipse/>
+  </object>
+  <object x="352" y="736">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="playerEnd" width="30" height="30">
+  <object x="1694" y="1079">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="playerSpawn" width="30" height="30">
+  <object x="218" y="1782">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>

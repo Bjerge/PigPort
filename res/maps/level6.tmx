@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="30" height="30" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="Tezture Tiles" tilewidth="64" tileheight="64">
+  <image source="Tezture Tiles.png" width="512" height="640"/>
+ </tileset>
+ <layer name="Background" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJxjZWBgYANi1gGg+YCYl440K5TG5y5OGvgTZvdg9C+xtOYA+ddwgPw70uJ31L+j/uUcYf4dafGLy7+cI8y/QyV+QXoFB8C/IL2SQyB+h1N5Ndq+Gjz5V3CA/CuJ5l96hzOIBgAVKSEc
+  </data>
+ </layer>
+ <layer name="coll" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzdl80OgCAIgLU8Ve//vOmhzTFF/hwaGxdQP3AQdoQQDgc9A0+S0l8kLsKl7NmJC227c8s5WJ2OuJjUPUCJxYoL+aN7urLeWR8Ct/ZzctPm68Wt64PyfYsNm4Q7S1bjWs8aKlcad8/2Z65knyUX60Epl9KnWEw9LjwPrtPOR2q+FtyE+LRcbO5yuS0bt46/eDjc1jpJ/8y8Z2otWdcz1rPYe8R7HnlwPf7Jir7asQLN
+  </data>
+ </layer>
+ <layer name="Deco_lvl1" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzVlsEOgyAMhvcSXua8uLk30Ju+/2ONHkgI+QstUGRf0qgErW3+lk6P/kzM+hOsfS1/xMDv29nH2SbYuwb3s/D70n2tWAb/3r/zAmtIjx6NvrSs+S0su7MjeEZxSUjFHuLr4HR2Ffoq8dsSqgWUc02N1/QDzbu1uuvdt1rS4wwi7s6RRW9O6UYab2kvaQk3s3g0GqF4UF7iHrRE11q/HHf0vl5+UZ5T5xynyZxWR9CoBdK+z+0bad6LZxSEpOYIpAdOAyUzSq7fWEA+f570Cp0=
+  </data>
+ </layer>
+ <layer name="Deco_lvl2" width="30" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzjENAAAIA7Apwb9MDOwlPK2CJgAANPMdADi2oUAAHw==
+  </data>
+ </layer>
+ <objectgroup name="playerSpawn" width="30" height="30">
+  <object x="1055" y="1332">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fairyDustEasy" width="30" height="30">
+  <object x="608" y="1186">
+   <ellipse/>
+  </object>
+  <object x="1438" y="1311">
+   <ellipse/>
+  </object>
+  <object x="1312" y="864">
+   <ellipse/>
+  </object>
+  <object x="1247" y="356">
+   <ellipse/>
+  </object>
+  <object x="479" y="543">
+   <ellipse/>
+  </object>
+  <object x="1552" y="1569">
+   <ellipse/>
+  </object>
+  <object x="1371" y="1584">
+   <ellipse/>
+  </object>
+  <object x="1559" y="1119">
+   <ellipse/>
+  </object>
+  <object x="280" y="1435">
+   <ellipse/>
+  </object>
+  <object x="1171" y="1630">
+   <ellipse/>
+  </object>
+  <object x="106" y="845">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fairyCage" width="30" height="30">
+  <object x="672" y="221">
+   <ellipse/>
+  </object>
+  <object x="1057" y="95">
+   <ellipse/>
+  </object>
+  <object x="1569" y="1372">
+   <ellipse/>
+  </object>
+  <object x="479" y="1051">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="trapEasy" width="30" height="30"/>
+ <objectgroup name="playerEnd" width="30" height="30">
+  <object x="1760" y="1788">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="enemyEasy" width="30" height="30">
+  <object x="466" y="1781"/>
+  <object x="1407" y="1112"/>
+  <object x="1274" y="1790">
+   <properties>
+    <property name="Difficulty" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

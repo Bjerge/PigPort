@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="64" tileheight="64">
+ <tileset firstgid="1" name="Tezture Tiles" tilewidth="64" tileheight="64">
+  <image source="Tezture Tiles.png" width="512" height="640"/>
+ </tileset>
+ <tileset firstgid="81" name="guideTexture" tilewidth="64" tileheight="64">
+  <image source="guideTexture.png" width="768" height="640"/>
+ </tileset>
+ <layer name="background" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjZWBgYANiVirRvEDMR0WaWu4add+o+0bdN+q+UfdR130AjgMO2Q==
+  </data>
+ </layer>
+ <layer name="info" width="20" height="20" visible="0">
+  <data encoding="base64" compression="zlib">
+   eJztz7sSgjAURdH8NI8WsEUQbRAEGlDRhofI57GLFGkoNBVMzsxqdnEnEcLMzGwPOyHBGRel12hwx+OHezcUKFEpvUOPAeP/z9XeEy1eeCs9xBERYtks2HDgrtz7YMIXs9JTXJEhl82DjwAHzX9seQshWBg1
+  </data>
+ </layer>
+ <layer name="decoration 1" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAfEEXjq+EQxwYEsYiJ4TAPXRwbkKSyedgALczTJGAeJ4nmGRIwjxRAC/+qIfGpbR6y+Kh5o+YRq49Y80yB2IxE87CVczBgC8R2SHxc5SayOLZyjpoAAIPDBxI=
+  </data>
+ </layer>
+ <layer name="coll" width="20" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgYKQyphYYKubxA7EAFc1jB2KOIWaeEBALA7HIIHXfUDOPC4i5gZhnkLqPHuahp6nB5r6hah41MQBMrwHR
+  </data>
+ </layer>
+ <objectgroup name="enemyHard" width="20" height="20" visible="0">
+  <object x="606" y="1119">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fairyDustHard" width="20" height="20" visible="0">
+  <object x="336" y="1131">
+   <ellipse/>
+  </object>
+  <object x="783" y="670">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="enemyMedium" width="20" height="20" visible="0">
+  <object x="690" y="1140"/>
+ </objectgroup>
+ <objectgroup name="fairyDustMedium" width="20" height="20" visible="0">
+  <object x="792" y="1172">
+   <ellipse/>
+  </object>
+  <object x="540" y="1172">
+   <ellipse/>
+  </object>
+  <object x="1054" y="852">
+   <ellipse/>
+  </object>
+  <object x="730" y="656">
+   <ellipse/>
+  </object>
+  <object x="476" y="404">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fairyDustEasy" width="20" height="20">
+  <object x="416" y="1180">
+   <ellipse/>
+  </object>
+  <object x="673" y="1180">
+   <ellipse/>
+  </object>
+  <object x="1053" y="861">
+   <ellipse/>
+  </object>
+  <object x="732" y="671">
+   <ellipse/>
+  </object>
+  <object x="479" y="413">
+   <ellipse/>
+  </object>
+  <object x="860" y="1183">
+   <ellipse/>
+  </object>
+  <object x="671" y="669">
+   <ellipse/>
+  </object>
+  <object x="540" y="413">
+   <ellipse/>
+  </object>
+  <object x="544" y="1181">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="playerEnd" width="20" height="20" visible="0">
+  <object x="159" y="188">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="playerSpawn" width="20" height="20" visible="0">
+  <object x="1055" y="1130">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="fairyCage" width="20" height="20" visible="0">
+  <object x="737" y="605">
+   <ellipse/>
+  </object>
+  <object x="544" y="1055">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="BasicFlyingMinion" width="20" height="20"/>
+ <objectgroup name="destructables" width="20" height="20">
+  <object x="605" y="1095"/>
+ </objectgroup>
+ <objectgroup name="BossFlyingBall" width="20" height="20">
+  <object x="803" y="734">
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>

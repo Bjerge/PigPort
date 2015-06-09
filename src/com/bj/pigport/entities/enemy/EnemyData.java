@@ -6,36 +6,51 @@ import com.bj.pigport.entities.enemy.EnemyMissile;
 
 public class EnemyData {
 	protected boolean active = true;
-	protected int health;
+	public int health;
 	protected int maxHealth;
 	protected int damage;
 	protected int type;
-	protected String name;
+	public String name;
 	protected int level;	
 	protected int playerXP;
 	protected Texture texEnemy;
 	protected float texStretch = 1;
 	
-	protected Texture texWeapon;
+	public Texture texWeapon;
+	public float weaponRotation = 0;
+	public int meleeWeaponAttackTimer = 0;
+	public int direction = 1;
+	
 	protected float speed;
 	protected int enemyNumber;
 	protected float renderPosition;
 	
-	protected boolean ground = false;
-	protected boolean ranged = false;
+	protected boolean groundCharge = false;
+	public boolean flyingCharge = false;
+	protected boolean groundLittleMovement = false;
+	
+	protected boolean meleeWeaponAttack = false;
+	
 	protected boolean giant = false;
 	public boolean missile = false;
 	
+	public boolean warlock = false;
+	
+	public int standTimer = 0;
+	public int walkTimer = 1;
 	
 	public EnemyMissile enemyMissiles [];
 	public int missilesNumber = 0;
+	public boolean missileColission = false;
+	public float missileStretch = 1;
+	public float missileGravity = 0;
 	public int missilesNextToFire = 0;
 	
-	protected int missileCDTimer = 0;
-	protected int missileShootTimer = 0;
-	public boolean enemyMissileReset = false;
+	public int missileCDTimer = 0;
+	public int missileShootTimer = 0;
+	public boolean enemyMissileReset [];
 	
-	protected boolean flying = false;
+	
 	private int flyingState = 0;
 	private float flyPosX = 0;
 	private float flyPosY = 0;
@@ -44,9 +59,9 @@ public class EnemyData {
 	
 	protected boolean [] boss = {false, false, false, false, false, false, false, false, false, false};
 		
-	protected float SpawnX = 0;
+	public float SpawnX = 0;
 	protected float SpawnY = 0;
-	public int enemyWalkRightLeft = 0;
+	public int enemyWalkRightLeft = 1;
 	
 	protected int enemyType;
 	
@@ -61,19 +76,19 @@ public class EnemyData {
 	public boolean hitByMelee = false;
 	public int hitByMeleeTimer = 0;
 	
-	protected boolean frozen = false;
-	protected int frozenTimer = 0;
+	public boolean frozen = false;
+	public int frozenTimer = 0;
 	
-	protected boolean fire = false;
-	protected int fireTimer = 0;
+	public boolean fire = false;
+	public int fireTimer = 0;
 	
-	protected boolean wind = false;
-	protected int windTimer = 0;
+	public boolean wind = false;
+	public int windTimer = 0;
 	
 	
 	//Movement
 	protected int lockDirection = 0;
-	protected int lockTimer = 0;
+	public int lockTimer = 0;
 	
 	
 	
@@ -185,22 +200,6 @@ public class EnemyData {
 		this.renderPosition = renderPosition;
 	}
 	
-	public boolean isRanged() {
-		return ranged;
-	}
-
-	public void setRanged(boolean ranged) {
-		this.ranged = ranged;
-	}
-
-	public boolean isGiant() {
-		return giant;
-	}
-
-	public void setGiant(boolean giant) {
-		this.giant = giant;
-	}
-	
 	public boolean isMissile() {
 		return missile;
 	}
@@ -209,14 +208,6 @@ public class EnemyData {
 		this.missile = missile;
 	}
 	
-	public boolean isFlying() {
-		return flying;
-	}
-
-	public void setFlying(boolean flying) {
-		this.flying = flying;
-	}
-
 	public int getEnemyType() {
 		return enemyType;
 	}

@@ -8,19 +8,12 @@ public class BasicMinion extends EnemyData{
 	public BasicMinion() {
 		playerInRangeRadiusModifier = 1.4f;
 		speed = -0.7f;
-		ground = true;
-		setDifficultyVariables(1);
+		groundCharge = true;
+		health = 50;
+		maxHealth = 50;
+		damage = 5;
+		playerXP = 10;
+		texEnemy = Game.res.getTexture("BasicMinion");
+		name = "Basic Ground";
 	}
-	
-	public void setDifficultyVariables(int difficulty)
-	{
-		if (difficulty == 1) {
-			health = 50;
-			maxHealth = 50;
-			damage = 5;
-			playerXP = 10;
-			texEnemy = Game.res.getTexture("BasicMinion");
-		}
-	}
-
 }

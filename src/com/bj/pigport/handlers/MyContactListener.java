@@ -102,6 +102,22 @@ public class MyContactListener implements ContactListener {
 		if(fb.getUserData() != null && fb.getUserData().equals("foot")){
 			numFootContacts++;
 		}
+		
+		if(fa.getUserData() != null && fa.getUserData().equals("collThinDisabler")){
+			Play.player.data.collThinDisableTimer = 1;
+		}
+		if(fb.getUserData() != null && fb.getUserData().equals("collThinDisabler")){
+			Play.player.data.collThinDisableTimer = 1;
+		}
+		
+		if(fa.getUserData() != null && fa.getUserData().equals("ballCollThinDisabler")){
+			Play.player.data.ball.collThinDisableTimer = 1;
+		}
+		if(fb.getUserData() != null && fb.getUserData().equals("ballCollThinDisabler")){
+			Play.player.data.ball.collThinDisableTimer = 1;
+		}
+		
+		
 		if(Play.platformNr > 0)
 		{
 			for(int i = 0; i < Play.platformNr; i++)
@@ -133,13 +149,9 @@ public class MyContactListener implements ContactListener {
 		
 		if(fa.getUserData() != null && fa.getUserData().equals("footBall")){
 			Play.tpNow = true;
-			Ball.ballCoordsX = PlayerData.ball.getPosition().x;
-			Ball.ballCoordsY = PlayerData.ball.getPosition().y;			
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("footBall")){
 			Play.tpNow = true;
-			Ball.ballCoordsX = PlayerData.ball.getPosition().x;
-			Ball.ballCoordsY = PlayerData.ball.getPosition().y;
 		}
 		if(fa.getUserData() != null && fa.getUserData().equals("dust")){
 			fairyDustToRemove.add(fa.getBody());
@@ -154,35 +166,22 @@ public class MyContactListener implements ContactListener {
 			fairyCageToRemove.add(fb.getBody());
 		}
 		
-		for(int i = 0; i < Loot.lootNumber; i++)
-		{
-			
-			
-			if(fa.getUserData() != null && fa.getUserData().equals("loot" + i)){
-				Loot.loot[i].pickedUp = true;
-			}
-			if(fb.getUserData() != null && fb.getUserData().equals("loot" + i)){
-				Loot.loot[i].pickedUp = true;
-			}
-		}
-		
 		if(fa.getUserData() != null && fa.getUserData().equals("playerHitEnemy")){
-			PlayerData.player.damageContact = true;
-			PlayerData.player.knockBackContact = true;
-			PlayerData.player.knockBackSource = (fb.getBody().getPosition());		
+			Play.player.data.damageContact = true;
+			Play.player.data.knockBackContact = true;
+			Play.player.data.knockBackSource = (fb.getBody().getPosition());		
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("playerHitEnemy")){
-			PlayerData.player.damageContact = true;
-			PlayerData.player.knockBackContact = true;
-			PlayerData.player.knockBackSource = (fa.getBody().getPosition());
+			Play.player.data.damageContact = true;
+			Play.player.data.knockBackContact = true;
+			Play.player.data.knockBackSource = (fa.getBody().getPosition());
 		}
 		if(fa.getUserData() != null && fa.getUserData().equals("playerHitMissile")){
-			PlayerData.player.damageContact = true;
+			Play.player.data.damageContact = true;
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("playerHitMissile")){
-			PlayerData.player.damageContact = true;
+			Play.player.data.damageContact = true;
 		}
-		
 		
 		if(Play.enemyNumber > 0)
 		{
@@ -190,15 +189,19 @@ public class MyContactListener implements ContactListener {
 			{				
 				if(fa.getUserData() != null && fa.getUserData().equals("enemyHitByPlayerMelee"+i)){
 					Play.enemy[i].data.hitByMelee = true;
+					//System.out.println(Play.enemy[i].data.name + " number " + i + " was hit by player melee");
 				}
 				if(fb.getUserData() != null && fb.getUserData().equals("enemyHitByPlayerMelee"+i)){
 					Play.enemy[i].data.hitByMelee = true;
+					//System.out.println(Play.enemy[i].data.name + " number " + i + " was hit by player melee");
 				}
 				if(fa.getUserData() != null && fa.getUserData().equals("enemyHitByBallEffect"+i)){
 					Play.enemy[i].data.hitByBallEffect = true;
+					//System.out.println(Play.enemy[i].data.name + " was hit by player ball");
 				}
 				if(fb.getUserData() != null && fb.getUserData().equals("enemyHitByBallEffect"+i)){
 					Play.enemy[i].data.hitByBallEffect = true;
+					//System.out.println(Play.enemy[i].data.name + " was hit by player ball");
 				}
 				
 				if(fa.getUserData() != null && fa.getUserData().equals("enemyRightHand"+i)){
@@ -214,18 +217,15 @@ public class MyContactListener implements ContactListener {
 					Play.enemy[i].data.enemyWalkRightLeft = 1;
 				}
 				
-				
-				if(Play.enemy[i].data.missile)
+				for(int ii = 0; ii < Play.enemy[i].data.missilesNumber; ii++)
 				{
-					if(fa.getUserData() != null && fa.getUserData().equals("enemyMissileHitPlayer"+i)){
-						Play.enemy[i].data.enemyMissileReset = true;
+					if(fa.getUserData() != null && fa.getUserData().equals("enemyMissileColission"+i+"."+ii)){
+						Play.enemy[i].data.enemyMissileReset[ii] = true;
 					}
-					if(fb.getUserData() != null && fb.getUserData().equals("enemyMissileHitPlayer"+i)){
-						Play.enemy[i].data.enemyMissileReset = true;
+					if(fb.getUserData() != null && fb.getUserData().equals("enemyMissileColission"+i+"."+ii)){
+						Play.enemy[i].data.enemyMissileReset[ii] = true;
 					}
 				}
-				
-				
 			}
 		}
 		
@@ -298,28 +298,28 @@ public class MyContactListener implements ContactListener {
 		
 		//Check Ball's Right/Left/Top/Down sensors
 		if(fa.getUserData() != null && fa.getUserData().equals("ballSensorRight")){
-			Ball.sensingBallRightLeft = 1;
+			Play.player.data.ball.sensingBallRightLeft = 1;
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("ballSensorRight")){
-			Ball.sensingBallRightLeft = 1;
+			Play.player.data.ball.sensingBallRightLeft = 1;
 		}
 		if(fa.getUserData() != null && fa.getUserData().equals("ballSensorLeft")){
-			Ball.sensingBallRightLeft = 2;
+			Play.player.data.ball.sensingBallRightLeft = 2;
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("ballSensorLeft")){
-			Ball.sensingBallRightLeft = 2;
+			Play.player.data.ball.sensingBallRightLeft = 2;
 		}
 		if(fa.getUserData() != null && fa.getUserData().equals("ballSensorTop")){
-			Ball.sensingBallTopDown = 1;
+			Play.player.data.ball.sensingBallTopDown = 1;
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("ballSensorTop")){
-			Ball.sensingBallTopDown = 1;
+			Play.player.data.ball.sensingBallTopDown = 1;
 		}
 		if(fa.getUserData() != null && fa.getUserData().equals("ballSensorDown")){
-			Ball.sensingBallTopDown = 2;
+			Play.player.data.ball.sensingBallTopDown = 2;
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("ballSensorDown")){
-			Ball.sensingBallTopDown = 2;
+			Play.player.data.ball.sensingBallTopDown = 2;
 		}
 
 	}
@@ -363,18 +363,18 @@ public class MyContactListener implements ContactListener {
 		}
 		
 		if(fa.getUserData() != null && fa.getUserData().equals("playerHitEnemy")){
-			PlayerData.player.damageContact = false;
-			PlayerData.player.knockBackContact = false;
+			Play.player.data.damageContact = false;
+			Play.player.data.knockBackContact = false;
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("playerHitEnemy")){
-			PlayerData.player.damageContact = false;
-			PlayerData.player.knockBackContact = false;
+			Play.player.data.damageContact = false;
+			Play.player.data.knockBackContact = false;
 		}
 		if(fa.getUserData() != null && fa.getUserData().equals("playerHitMissile")){
-			PlayerData.player.damageContact = false;
+			Play.player.data.damageContact = false;
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("playerHitMissile")){
-			PlayerData.player.damageContact = false;
+			Play.player.data.damageContact = false;
 		}
 		
 		if(Play.platformNr > 0)
@@ -415,6 +415,12 @@ public class MyContactListener implements ContactListener {
 				}
 				if(fb.getUserData() != null && fb.getUserData().equals("enemyHitByPlayerMelee"+i)){
 					Play.enemy[i].data.hitByMelee = false;
+				}
+				if(fa.getUserData() != null && fa.getUserData().equals("enemyHitByBallEffect"+i)){
+					Play.enemy[i].data.hitByBallEffect = false;
+				}
+				if(fb.getUserData() != null && fb.getUserData().equals("enemyHitByBallEffect"+i)){
+					Play.enemy[i].data.hitByBallEffect = false;
 				}
 			}
 		}

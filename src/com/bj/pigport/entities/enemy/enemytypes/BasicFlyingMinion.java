@@ -8,13 +8,12 @@ public class BasicFlyingMinion extends EnemyData{
 	public BasicFlyingMinion() {
 		playerInRangeRadiusModifier = 1.4f;
 		speed = -0.7f;
-		flying = true;
-		missile = true;
-		health = 1000;
-		maxHealth = 1000;
+		flyingCharge = true;
+		health = 50;
+		maxHealth = 50;
 		damage = 5;
 		playerXP = 10;
 		texEnemy = Game.res.getTexture("BasicFlyingMinion");
+		name = "Basic Flying";
 	}
-
 }

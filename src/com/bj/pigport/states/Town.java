@@ -29,6 +29,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.bj.pigport.entities.map.MapCreator;
 import com.bj.pigport.entities.mapobjects.FairyCage;
 import com.bj.pigport.entities.mapobjects.FairyDust;
 import com.bj.pigport.entities.mapobjects.FireArrow;
@@ -36,8 +37,6 @@ import com.bj.pigport.entities.mapobjects.Loot;
 import com.bj.pigport.entities.mapobjects.Destructables;
 import com.bj.pigport.entities.mapobjects.MovingPlatform;
 import com.bj.pigport.entities.mapobjects.Trap;
-import com.bj.pigport.entities.player.abilities.AttackAnimation;
-import com.bj.pigport.entities.player.abilities.AttackAnimationCD;
 import com.bj.pigport.entities.player.abilities.Ball;
 import com.bj.pigport.entities.player.abilities.BallEffect;
 import com.bj.pigport.entities.player.abilities.TimeStop;
@@ -109,9 +108,6 @@ public class Town extends GameState{
 	
 	public static boolean playerAttackingMelee = false;
 	public static int playerAttackingEnemyTimer = 0;
-	public static AttackAnimation attackAnimation;
-	public static AttackAnimationCD attackAnimationCD;
-	
 	private int [] mapSize = new int [2];
 	
 	private TextureRegion dot;
@@ -132,16 +128,17 @@ public class Town extends GameState{
 		Loot.loot = new Loot[20];
 		Loot.lootNumber = 0;
 		
-		createPlayerSpawn();
-		createPlayerEnd();
 		PlayerCreator.createPlayer(getWorld());
-		createTiles();
+		
+		tileMap = MapCreator.createPlayerSpawn(tileMap, "town");
+		MapCreator.createPlayerEnd(tileMap, world);
+		tmr = MapCreator.createTiles(tileMap, tmr, tileSize, world);
+		
+		
 		Ball.createBall(getWorld());
 		BallEffect.createBallEffect(getWorld());
-		createAttackAnimationStar();
-		createAttackAnimationStarCD();
 		
-		Player.numFairyDust = 99;
+		Play.player.data.numFairyDust = 99;
 		
 		
 		// set up box2d cam
@@ -151,8 +148,8 @@ public class Town extends GameState{
 				(Game.V_HEIGHT * 7) / PPM);
 		
 		// set up HUD
-		hud = new HUD(PlayerData.player);
-		PlayerData.inventory = new Inventory(PlayerData.player);
+		hud = new HUD(Play.player);
+		Play.player.data.inventory = new Inventory(Play.player);
 		
 		// setup our mini map camera
 	    miniMapCam = new OrthographicCamera(
@@ -171,8 +168,8 @@ public class Town extends GameState{
 	public void handleInput() {
 		
 		PlayerController.PlayerControls();
-		if(inventoryActive != true)Ball.BallControls();
-		BallEffect.ballEffectController();
+		if(inventoryActive != true)Play.player.data.ball.BallControls();
+		Play.player.data.ballEffect.ballEffectController();
 		TimeStop.TimeStopControls();
 		
 		if(MyContactListener.isPlayerAtEnd())
@@ -192,41 +189,30 @@ public class Town extends GameState{
 		
 		if(MyInput.isPressed(MyInput.BUTTON_INVENTORY) && inventoryActive != true)
 		{
-			PlayerData.inventory = new Inventory(PlayerData.player);
+			Play.player.data.inventory = new Inventory(Play.player);
 			inventoryActive = true;
 		}
 		else if(MyInput.isPressed(MyInput.BUTTON_INVENTORY) && inventoryActive)
 		{
-			PlayerData.inventory = new Inventory(PlayerData.player);
+			Play.player.data.inventory = new Inventory(Play.player);
 			inventoryActive = false;
 		}
 		
-		if(inventoryActive)PlayerData.inventory.InputUpdater(gsm);
+		if(inventoryActive)Play.player.data.inventory.InputUpdater(gsm);
 	}
 	public void update(float dt) {
 		
 		handleInput();
 		
-		if(inventoryActive)PlayerData.inventory.Updater(dt);
+		if(inventoryActive)Play.player.data.inventory.Updater(dt);
 		
 		// update box2d
 		//world.step(Game.STEP, 1, 1);
 		
-		PlayerData.player.update(dt);
+		Play.player.update(dt);
 		
-		if(playerAttackingEnemyTimer > 90)
-		{
-			attackAnimation.getBody().setTransform(PlayerData.player.getPosition().x, PlayerData.player.getPosition().y, 0);
-			attackAnimation.update(dt);
-		}
-		else if(playerAttackingEnemyTimer > 0)
-		{
-			attackAnimationCD.getBody().setTransform(PlayerData.player.getPosition().x, PlayerData.player.getPosition().y, 0);
-			attackAnimationCD.update(dt);
-		}
-		
-		PlayerData.ball.update(dt);	
-		PlayerData.ballEffect.update(dt);
+		Play.player.data.ball.update(dt);	
+		Play.player.data.ballEffect.update(dt);
 
 		for(int i = 0; i < Loot.lootNumber; i++)Loot.loot[i].update(dt);
 		
@@ -248,28 +234,7 @@ public class Town extends GameState{
 		//modifier = 6.05f;
 		getCam().zoom = 1;
 		
-		/*
-		getCam().position.set((Game.V_WIDTH * Game.SCALE)/2, (Game.V_HEIGHT * Game.SCALE / 2), 0);
-		
-		if(PlayerData.player.getPosition().x * PPM > (Game.V_WIDTH * Game.SCALE /2 ))
-		{
-			getCam().position.set((PlayerData.player.getPosition().x * PPM), getCam().position.y, 0);
-		}
-		if(PlayerData.player.getPosition().y * PPM > (Game.V_HEIGHT * Game.SCALE / 2) + 32)
-		{
-			getCam().position.set(getCam().position.x, (PlayerData.player.getPosition().y * PPM), 0);
-		}
-		if(PlayerData.player.getPosition().x * PPM > mapSize[0] - (Game.V_WIDTH * Game.SCALE / 2))
-		{
-			getCam().position.set(mapSize[0] - (Game.V_WIDTH * Game.SCALE / 2), getCam().position.y, 0);
-		}	
-		if(PlayerData.player.getPosition().y * PPM > mapSize[1] - (Game.V_HEIGHT * Game.SCALE / 2) - 32)
-		{
-			getCam().position.set(getCam().position.x , mapSize[1] - (Game.V_HEIGHT * Game.SCALE / 2) - 32, 0);
-		}
-		*/
-		
-		getCam().position.set((int) (PlayerData.player.getPosition().x * PPM + Game.V_WIDTH / 15) ,(int) (PlayerData.player.getPosition().y * PPM + Game.V_HEIGHT / 15f), 0);
+		getCam().position.set((int) (Play.player.getPosition().x * PPM + Game.V_WIDTH / 15) ,(int) (Play.player.getPosition().y * PPM + Game.V_HEIGHT / 15f), 0);
 		
 		getCam().update();
 		getCam().apply(Gdx.gl10);
@@ -283,43 +248,24 @@ public class Town extends GameState{
 		
 		for(int i = 0; i < Destructables.number; i ++) Destructables.destructables[i].render(sb);
 		
-		PlayerData.player.render(sb);
+		Play.player.render(sb);
 		
 		sb.begin();
-		sb.draw(Player.HealthTex, (PlayerData.player.getPosition().x * 100) - 50, (PlayerData.player.getPosition().y * 100) + (PlayerData.player.getTexture().getHeight()/2), ((float) (((100) / (float) (Player.playerStartHealth)) * (PlayerData.player.health))) , 8);
-		sb.draw(Player.HealthLeftTex, (PlayerData.player.getPosition().x * 100) + 50, (PlayerData.player.getPosition().y * 100) + (PlayerData.player.getTexture().getHeight()/2),	 -((float) (100) - (((100) / (float) (Player.playerStartHealth)) * (PlayerData.player.health))) , 8);
+		sb.draw(Play.player.data.HealthTex, (Play.player.getPosition().x * 100) - 50, (Play.player.getPosition().y * 100) + (Play.player.data.HealthTex.getHeight()/2), ((float) (((100) / (float) (Play.player.data.healthMax)) * (Play.player.data.health))) , 8);
+		sb.draw(Play.player.data.HealthLeftTex, (Play.player.getPosition().x * 100) + 50, (Play.player.getPosition().y * 100) + (Play.player.data.HealthLeftTex.getHeight()/2),	 -((float) (100) - (((100) / (float) (Play.player.data.healthMax)) * (Play.player.data.health))) , 8);
 		sb.end();
 		
 		
 		
-		PlayerData.ball.render(sb);
-		PlayerData.ballEffect.render(sb);
+		Play.player.data.ball.render(sb);
+		Play.player.data.ballEffect.render(sb);
 		
 		for(int i = 0; i < Loot.lootNumber; i++)Loot.loot[i].render(sb);
-		
-		if(playerAttackingEnemyTimer > 90) attackAnimation.render(sb);
-		else if(playerAttackingEnemyTimer > 0) attackAnimationCD.render(sb);
-
-		sb.begin();
-		/*
-		if (MyInput.isDown())
-		{
-			for(float i = 1; i < (6.5f + (0.5 * Player.ballDotLevel)) ;)
-			{
-				Ball.getDrawBall(i, getCam().position.x, getCam().position.y);
-				sb.draw(dot,Ball.xBallCoordinate, Ball.yBallCoordinate);
-				i += 0.5f;
-				
-				//if(i == 2) System.out.println(Ball.xBallCoordinate + " " + Ball.yBallCoordinate + " " + PlayerData.player.getPosition().x * 100 + " " + PlayerData.player.getPosition().y * 100);
-			}
-		}
-		*/
-		sb.end();
 		
 		// draw HUD
 		sb.setProjectionMatrix(getHudCam().combined);
 		hud.render(sb);
-		if(inventoryActive)PlayerData.inventory.render(sb);
+		if(inventoryActive)Play.player.data.inventory.render(sb);
 		
 		if(debug){
 			b2dr.render(getWorld(), b2dCam.combined);
@@ -329,131 +275,11 @@ public class Town extends GameState{
 	
 	public void dispose() {}
 	
-	
-	private void createPlayerSpawn(){
-		
-		try {
-			tileMap = new TmxMapLoader().load("res/maps/town.tmx");
-		}
-		catch(Exception e) {
-			System.out.println("Cannot find file: res/maps/town.tmx");
-			Gdx.app.exit();
-		}
-		MapLayer ml = tileMap.getLayers().get("playerSpawn");
-		for(MapObject mo : ml.getObjects()){
-			BodyDef cdef = new BodyDef();
-			cdef.type = BodyType.StaticBody;
-			if(mo instanceof RectangleMapObject){
-				PlayerData.playerSpawnX =  ((RectangleMapObject) mo).getRectangle().x / PPM;
-				PlayerData.playerSpawnY =  ((RectangleMapObject) mo).getRectangle().y / PPM;
-
-			}
-			else if(mo instanceof EllipseMapObject){
-				PlayerData.playerSpawnX = ((EllipseMapObject) mo).getEllipse().x / PPM;
-				PlayerData.playerSpawnY = ((EllipseMapObject) mo).getEllipse().y / PPM;
-			}
-		}		
-	}
-	
-	private void createPlayerEnd()
-	{
-		MapLayer ml = tileMap.getLayers().get("playerEnd");
-		if(ml == null) return;
-		BodyDef bdef = new BodyDef();
-		FixtureDef fdef = new FixtureDef();
-		for(MapObject mo : ml.getObjects()){
-			bdef.type = BodyType.StaticBody;
-			if(mo instanceof RectangleMapObject){
-				float x =  ((RectangleMapObject) mo).getRectangle().x / PPM;
-				float y =  ((RectangleMapObject) mo).getRectangle().y / PPM;
-				bdef.position.set(x, y);
-			}
-			else if(mo instanceof EllipseMapObject){
-				float x =  ((EllipseMapObject) mo).getEllipse().x / PPM;
-				float y =  ((EllipseMapObject) mo).getEllipse().y / PPM;
-				bdef.position.set(x, y);
-			}
-			CircleShape cshape = new CircleShape();
-			cshape.setRadius(32 / PPM);
-			fdef.shape = cshape;
-			fdef.isSensor = true;
-			fdef.filter.categoryBits = B2DVars.BIT_END;
-			fdef.filter.maskBits = B2DVars.BIT_PLAYER;
-			Body body = getWorld().createBody(bdef);
-			body.createFixture(fdef).setUserData("end");
-			cshape.dispose();
-		}	
-	}
-	
-	private void createTiles(){
-		// load tile map
-		try {
-			tileMap = new TmxMapLoader().load("res/maps/town.tmx");
-		}
-		catch(Exception e) {
-			System.out.println("Cannot find file: res/maps/town.tmx");
-			Gdx.app.exit();
-		}
-		
-		tmr = new OrthogonalTiledMapRenderer(tileMap);
-		tileSize = (int) tileMap.getProperties().get("tilewidth");
-		TiledMapTileLayer layer;
-		layer = (TiledMapTileLayer) tileMap.getLayers().get("coll");
-		createLayer (layer, B2DVars.BIT_COLL);
-	}
-	
-	private void createLayer(TiledMapTileLayer layer, short bits){
-		
-		BodyDef bdef = new BodyDef();
-		FixtureDef fdef = new FixtureDef();
-		
-		// go through all the cells in the layer
-		//y-axis direction
-		mapSize[0] = (int) (layer.getWidth() * tileSize);
-		mapSize[1] = (int) (layer.getHeight() * tileSize);
-		
-		for(int row = 0; row < layer.getHeight(); row++){
-			//x-axis direction
-			for(int col = 0; col < layer.getWidth(); col++){
-						
-				// get cell
-				Cell cell = layer.getCell(col, row);
-						
-				// check if cells exists
-				if(cell == null) continue;
-				if(cell.getTile() == null) continue;
-						
-				// create a body + fixture from cell;
-				bdef.type = BodyType.StaticBody;
-				bdef.position.set(
-					(col + 0.5f) * tileSize / PPM, //width
-					(row + 0.5f) * tileSize / PPM //height
-				);	
-						
-				ChainShape cs = new ChainShape();
-				Vector2[] v = new Vector2[5];
-				v[0] = new Vector2(-tileSize / 2 / PPM, -tileSize / 2 / PPM);
-				v[1] = new Vector2(-tileSize / 2 / PPM, tileSize / 2 / PPM);
-				v[2] = new Vector2(tileSize / 2 / PPM, tileSize / 2 / PPM);
-				v[3] = new Vector2(tileSize / 2 / PPM, -tileSize / 2 / PPM);
-				v[4] = new Vector2(-tileSize / 2 / PPM, -tileSize / 2 / PPM);
-				cs.createChain(v);
-				fdef.friction = 2;
-				fdef.shape = cs;
-				fdef.filter.categoryBits = bits;
-				fdef.filter.maskBits = B2DVars.BIT_PLAYER | B2DVars.BIT_BALL | B2DVars.BIT_ENEMY | B2DVars.BIT_MOVINGPLATFORM | B2DVars.BIT_FIREARROW | B2DVars.BIT_OBJECTS | B2DVars.BIT_LOOT; 
-				fdef.isSensor = false;
-				getWorld().createBody(bdef).createFixture(fdef);
-				cs.dispose();
-			}
-		}
-	}
-	
 	public void startTheMap()
 	{
-		PlayerData.player.health = PlayerData.player.healthMax;
-		Player.numFairyCage = 0;
-		Player.numFairyDust = 0;
+		Play.player.data.health = Play.player.data.healthMax;
+		Play.player.data.numFairyCage = 0;
+		Play.player.data.numFairyDust = 0;
 		MyContactListener.playerAtEnd = false;
 		Play.isPlayerTeleporting = false;
 		getCam().zoom = 1;	
@@ -467,36 +293,6 @@ public class Town extends GameState{
 		slowCamera = true;
 		slowCameraNumber = 0;
 		lerp = 0.05f;
-	}
-	
-	private void createAttackAnimationStar(){
-		
-		BodyDef bdef = new BodyDef();
-		//create ball
-		bdef.position.set(PlayerData.player.getPosition().x, PlayerData.player.getPosition().y);
-		bdef.type = BodyType.DynamicBody;
-		Body body = getWorld().createBody(bdef);
-		CircleShape shape = new CircleShape();
-		shape.setRadius(12 / PPM);	
-		attackAnimation = new AttackAnimation(body);
-		body.setUserData(attackAnimation);
-		attackAnimation.getBody().setGravityScale(0f);
-		shape.dispose();
-	}	
-	
-	private void createAttackAnimationStarCD(){
-		
-		BodyDef bdef = new BodyDef();
-		//create ball
-		bdef.position.set(PlayerData.player.getPosition().x, PlayerData.player.getPosition().y);
-		bdef.type = BodyType.DynamicBody;
-		Body body = getWorld().createBody(bdef);
-		CircleShape shape = new CircleShape();
-		shape.setRadius(12 / PPM);	
-		attackAnimationCD = new AttackAnimationCD(body);
-		body.setUserData(attackAnimationCD);
-		attackAnimationCD.getBody().setGravityScale(0f);
-		shape.dispose();
 	}
 
 	public static World getWorld() {

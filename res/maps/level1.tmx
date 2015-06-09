@@ -1,68 +1,166 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="22" height="20" tilewidth="64" tileheight="64">
+<map version="1.0" orientation="orthogonal" width="30" height="20" tilewidth="64" tileheight="64">
  <tileset firstgid="1" name="Tezture Tiles" tilewidth="64" tileheight="64">
   <image source="Tezture Tiles.png" width="512" height="640"/>
  </tileset>
  <tileset firstgid="81" name="guideTexture" tilewidth="64" tileheight="64">
   <image source="guideTexture.png" width="768" height="640"/>
  </tileset>
- <layer name="background" width="22" height="20">
+ <layer name="background" width="30" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjZGBgYAViNirSzEDMCMS8QMxHRRpm7qh7R9076t5R9466d9S9hNwLACaNDyk=
+   eJxjZWBgYANiVjrTvEDMNwA0vf056t9R/476d9S/o/4d9e+of0eefwFlyhZF
   </data>
  </layer>
- <layer name="Info" width="22" height="20" visible="0">
+ <layer name="dec" width="30" height="20">
   <data encoding="base64" compression="zlib">
-   eJztzTcSgDAQBEF9EUGCsAmeBJNins58AKJNAE1VZ1d7xny3CTMWrMLdDTsOnMLdvxbDIUEq3K1Qo0Er3PW9sw49Bow3NwEsQkTC3xlyFCiFu77nLhh+Czc=
+   eJxjYBh4oEakOjEcbGqYTW17qQGGm73Y4gKXXYTcQEq8UtNeSsFgtNd4gOzFxiYFoMcrqXbhcwMp6Ws42EsKGAn2UssuUt1Ab3sF6WCvIAMmkKSDvZIMAw8AZg8JdA==
   </data>
  </layer>
- <layer name="deco_lvl1" width="22" height="20">
+ <layer name="dec2" width="30" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjYKAvEEPjq+FRg02OkLmcVDBXFogFoTS6e/HZDTJXmoBaSTQ9xJpLLMBlrhoWNdQ0VxqqRguItYFYh0rmwtQYAbExEJtQaC6pakAAOU5hekyB2IyAuZpEmo+sxxaI7QioMSTDXHSALT2QAmhtrjIQqwCxKh5zORmIB/QKB1haGezhS0gNchlITXNBQBKvKuoCAAIFCYU=
+   eJxjYBh6QG3U3mFlL7o9hPi0sFcLiLWBWIfO9hoBsTEQm9DZXnLkyQHYwpUe9mILV3rYSwgQEx60AMSEx3ADxgPtgFEw4gEA1bYFvA==
   </data>
  </layer>
- <layer name="coll" width="22" height="20">
+ <layer name="collThin" width="30" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjYGBgYKIyhgFmBuoBxlFzsZpLKC6Y0fBAu3ewmWsFxNZAbAPl0yr9DpS5jAyDNx8jp9GhZC41zB8IcymxY6DNJTf9AgDqXwG5
+   eJxjYBgFo2AUjDRgBcTWQGwz0A4ZZmA0XFHBaHiMgpEMAKBsAhQ=
   </data>
  </layer>
- <objectgroup name="playerSpawn" width="22" height="20">
-  <object x="1122" y="1145">
+ <layer name="coll" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYmBgYBoAzMxAf8A4Qu0lJV5wAVLMGGj/jtpLH3vJSUeEwGi6GrWXmukJHVArXXEBMTcQ8wCxEBALA7EIiWYMdDiPJHsHoo0DwgBTFgF3
+  </data>
+ </layer>
+ <objectgroup name="movingPlatform" width="30" height="20"/>
+ <objectgroup name="trapEasy" width="30" height="20"/>
+ <objectgroup name="fairyCage" width="30" height="20">
+  <object x="1698" y="156">
+   <ellipse/>
+  </object>
+  <object x="1694" y="798">
+   <ellipse/>
+  </object>
+  <object x="352" y="480">
+   <ellipse/>
+  </object>
+  <object x="224" y="730">
+   <ellipse/>
+  </object>
+  <object x="220" y="156">
+   <ellipse/>
+  </object>
+  <object x="1564" y="414">
    <ellipse/>
   </object>
  </objectgroup>
- <objectgroup name="playerEnd" width="22" height="20">
-  <object x="288" y="267">
+ <objectgroup name="fairyDustEasy" width="30" height="20">
+  <object x="350" y="1178">
+   <ellipse/>
+  </object>
+  <object x="666" y="1178">
+   <ellipse/>
+  </object>
+  <object x="1004" y="924">
+   <ellipse/>
+  </object>
+  <object x="1546" y="1160">
+   <ellipse/>
+  </object>
+  <object x="1822" y="846">
+   <ellipse/>
+  </object>
+  <object x="1762" y="848">
+   <ellipse/>
+  </object>
+  <object x="220" y="840">
+   <ellipse/>
+  </object>
+  <object x="172" y="506">
+   <ellipse/>
+  </object>
+  <object x="544" y="180">
+   <ellipse/>
+  </object>
+  <object x="1406" y="188">
+   <ellipse/>
+  </object>
+  <object x="1628" y="530">
+   <ellipse/>
+  </object>
+  <object x="990" y="484">
    <ellipse/>
   </object>
  </objectgroup>
- <objectgroup name="fairyCage" width="22" height="20">
-  <object x="802" y="543">
-   <ellipse/>
-  </object>
-  <object x="800" y="1119">
-   <ellipse/>
-  </object>
-  <object x="673" y="222">
+ <objectgroup name="playerSpawn" width="30" height="20">
+  <object x="156" y="1144">
    <ellipse/>
   </object>
  </objectgroup>
- <objectgroup name="enemyHard" width="22" height="20">
-  <object x="603" y="237"/>
-  <object x="849" y="617"/>
-  <object x="743" y="1137"/>
- </objectgroup>
- <objectgroup name="trapMedium" width="22" height="20">
-  <object x="865" y="1183"/>
-  <object x="479" y="670"/>
-  <object x="927" y="671"/>
-  <object x="800" y="288"/>
- </objectgroup>
- <objectgroup name="destructables" width="22" height="20">
-  <object x="900" y="995">
+ <objectgroup name="playerEnd" width="30" height="20">
+  <object x="1756" y="1138">
    <ellipse/>
   </object>
-  <object x="503" y="933">
+ </objectgroup>
+ <objectgroup name="destructables" width="30" height="20">
+  <object x="1690" y="480">
+   <ellipse/>
+  </object>
+  <object x="352" y="182">
+   <ellipse/>
+  </object>
+  <object x="990" y="908">
+   <ellipse/>
+  </object>
+  <object x="166" y="800">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="warlock" width="30" height="20">
+  <object x="960" y="862">
+   <ellipse/>
+  </object>
+  <object x="270" y="482">
+   <ellipse/>
+  </object>
+  <object x="280" y="162">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="tank" width="30" height="20">
+  <object x="1628" y="478">
+   <ellipse/>
+  </object>
+  <object x="1750" y="800">
+   <ellipse/>
+  </object>
+  <object x="594" y="170">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="groundShooter" width="30" height="20">
+  <object x="1338" y="1122">
+   <ellipse/>
+  </object>
+  <object x="988" y="470">
+   <ellipse/>
+  </object>
+  <object x="226" y="800">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="basicFlying" width="30" height="20">
+  <object x="532" y="832">
+   <ellipse/>
+  </object>
+  <object x="1442" y="440">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="basicGround" width="30" height="20">
+  <object x="1568" y="178">
+   <ellipse/>
+  </object>
+  <object x="730" y="1132">
    <ellipse/>
   </object>
  </objectgroup>

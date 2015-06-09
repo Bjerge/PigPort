@@ -18,7 +18,7 @@
  </layer>
  <layer name="de_lvl1" width="30" height="14">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFMKAMxCpArEqkODKQRuPLArEglKYl4MQiJonEZgViNjrQQkAsDMQiUD4vEPNhoUXR+MgAm3p0mpA6kHtMgdgMzX1iWMKJFP8hq2dAo2H+tQViOzT3YLOXGH/ioxnQ/IvNvWJ43E8sLYpHHuYOdH+JYXEvJwn+Y4CagS9+0QGyf2WQ3CmNx/3SWMJHjIB/kfM0rvRMiNYkw78g+yVxuItY2hCLf2Hxiy2cKEmflNAA2BYNug==
+   eJztU0EKwjAQ3ItCDwoeGijRk/bg0YPe9P/PcgNdWIbpJrXoyYFhskloZjapyB+Gs/KiHBvnPTLUJ+Vh0m+iI3ODG2+U2x+oR6l3yj3RHmoPth+1tq/4uSsf4C+RPi3NZ7WAWt6n8gV+2LktOSMVyMv8psB/q/bBuvnAXIn47Rbkk+kb0f0ifN6j85kD/5n0J1Xy+n967j3X9PpB3nL+MOOrVW8kr90v69Oa97lG3+TrDYE=
   </data>
  </layer>
  <layer name="dec_lvl2" width="30" height="14">
@@ -28,88 +28,21 @@
  </layer>
  <layer name="coll" width="30" height="14">
   <data encoding="base64" compression="zlib">
-   eJwTZWBgYKIzFgViZgb6A8ZRe+GAlPiipr3EgpFmLz79uOIFZi8XEHMDMQ+V7cUFaO3fUXsJ20ts3iXXXlES7KBmvQAAUFQBYg==
+   eJwTZWBgYKIzFgViZgb6A8ZRe+GAlPgiBnABMTcQ8xCwl1hArL3IYCjbi08/rniB2Ysc9tS0FxegtX9H7SVsL7F5l1x7RUmwg5r1AgDdEAGD
   </data>
  </layer>
- <objectgroup name="enemyHard" width="30" height="14">
-  <object x="591" y="669">
-   <ellipse/>
-  </object>
-  <object x="1473" y="741">
-   <ellipse/>
-  </object>
- </objectgroup>
- <objectgroup name="trapHard" width="30" height="14">
-  <object x="864" y="736">
-   <ellipse/>
-  </object>
-  <object x="799" y="734">
-   <ellipse/>
-  </object>
-  <object x="415" y="221">
-   <ellipse/>
-  </object>
-  <object x="478" y="223">
-   <ellipse/>
-  </object>
-  <object x="1501" y="416">
-   <ellipse/>
-  </object>
-  <object x="1632" y="799">
-   <ellipse/>
-  </object>
-  <object x="1697" y="799">
-   <ellipse/>
-  </object>
- </objectgroup>
- <objectgroup name="fairyDustHard" width="30" height="14">
-  <object x="988" y="728">
-   <ellipse/>
-  </object>
-  <object x="158" y="470">
-   <ellipse/>
-  </object>
-  <object x="1822" y="796">
-   <ellipse/>
-  </object>
- </objectgroup>
- <objectgroup name="enemyMedium" width="30" height="14">
-  <object x="670" y="676">
-   <ellipse/>
-  </object>
-  <object x="1502" y="738">
-   <ellipse/>
-  </object>
- </objectgroup>
- <objectgroup name="trapMedium" width="30" height="14">
-  <object x="1697" y="800">
-   <ellipse/>
-  </object>
-  <object x="864" y="736">
-   <ellipse/>
-  </object>
- </objectgroup>
- <objectgroup name="fairyDustMedium" width="30" height="14">
-  <object x="991" y="736">
-   <ellipse/>
-  </object>
-  <object x="158" y="476">
-   <ellipse/>
-  </object>
-  <object x="294" y="788">
-   <ellipse/>
-  </object>
-  <object x="1822" y="796">
-   <ellipse/>
-  </object>
-  <object x="1566" y="412">
-   <ellipse/>
-  </object>
- </objectgroup>
+ <objectgroup name="movingPlatform" width="30" height="14"/>
  <objectgroup name="trapEasy" width="30" height="14"/>
- <objectgroup name="enemyEasy" width="30" height="14">
-  <object x="669" y="572"/>
-  <object x="1679" y="757"/>
+ <objectgroup name="fairyCage" width="30" height="14">
+  <object x="226" y="413">
+   <ellipse/>
+  </object>
+  <object x="864" y="606">
+   <ellipse/>
+  </object>
+  <object x="1696" y="672">
+   <ellipse/>
+  </object>
  </objectgroup>
  <objectgroup name="fairyDustEasy" width="30" height="14">
   <object x="994" y="726">
@@ -134,25 +67,35 @@
    <ellipse/>
   </object>
  </objectgroup>
- <objectgroup name="movingPlatform" width="30" height="14"/>
- <objectgroup name="playerEnd" width="30" height="14">
-  <object x="1762" y="205">
-   <ellipse/>
-  </object>
- </objectgroup>
  <objectgroup name="playerSpawn" width="30" height="14">
   <object x="160" y="757">
    <ellipse/>
   </object>
  </objectgroup>
- <objectgroup name="fairyCage" width="30" height="14">
-  <object x="226" y="413">
+ <objectgroup name="playerEnd" width="30" height="14">
+  <object x="1762" y="205">
    <ellipse/>
   </object>
-  <object x="864" y="606">
+ </objectgroup>
+ <objectgroup name="destructables" width="30" height="14"/>
+ <objectgroup name="warlock" width="30" height="14">
+  <object x="816" y="674">
    <ellipse/>
   </object>
-  <object x="1696" y="672">
+ </objectgroup>
+ <objectgroup name="tank" width="30" height="14">
+  <object x="1502" y="730">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="groundShooter" width="30" height="14">
+  <object x="1674" y="380">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="basicFlying" width="30" height="14"/>
+ <objectgroup name="basicGround" width="30" height="14">
+  <object x="762" y="152">
    <ellipse/>
   </object>
  </objectgroup>

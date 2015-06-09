@@ -16,6 +16,8 @@ public class B2DSprite {
 	protected boolean stretced = false;
 	protected float stretchX;
 	protected float stretchY;
+	protected boolean rotated = false;
+	protected float rotation = 0;
 	
 	public B2DSprite(Body body){
 		this.body = body;
@@ -23,6 +25,14 @@ public class B2DSprite {
 	}
 	
 	public void setAnimation(TextureRegion[] reg, float delay){
+		animation.setFrames(reg, delay);
+		width = reg[0].getRegionWidth();
+		height = reg[0].getRegionHeight();
+	}
+	
+	public void setAnimationRotated(TextureRegion[] reg, float delay, float rot){
+		rotated = true;
+		rotation = rot;
 		animation.setFrames(reg, delay);
 		width = reg[0].getRegionWidth();
 		height = reg[0].getRegionHeight();
@@ -52,6 +62,11 @@ public class B2DSprite {
 					body.getPosition().y * B2DVars.PPM - (stretchY / 2),
 					stretchX,
 					stretchY);
+		}
+		else if(rotated)
+		{
+			sb.draw(animation.getFrame(), body.getPosition().x * B2DVars.PPM - height / 2, body.getPosition().y * B2DVars.PPM - width / 2,
+					height/2, width/2, height, width, 1, 1, rotation + 90, true);
 		}
 		else
 		{

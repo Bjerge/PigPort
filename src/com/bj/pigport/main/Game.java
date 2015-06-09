@@ -119,6 +119,10 @@ public class Game implements ApplicationListener{
 		res.loadTexture("res/images/Coins.png", "Coins");
 		res.loadTexture("res/images/Energy.png", "Energy");
 		
+		res.loadTexture("res/images/Warlock.png", "Warlock");
+		res.loadTexture("res/images/Tank.png", "Tank");
+		res.loadTexture("res/images/groundShooter.png", "GroundShooter");
+		
 		res.loadTexture("res/images/Letters.png", "Letters");
 		res.loadTexture("res/images/PlainButton1.png", "PlainButton1");
 		res.loadTexture("res/images/PlainButton2.png", "PlainButton2");
@@ -129,6 +133,20 @@ public class Game implements ApplicationListener{
 		res.loadTexture("res/images/Gems/Nature.png", "NatureGem");
 		res.loadTexture("res/images/Gems/Light.png", "LightGem");
 		res.loadTexture("res/images/Gems/Dark.png", "DarkGem");
+		
+		res.loadTexture("res/images/ballEffect/fireBallEffect.png", "fireBallEffect");
+		
+		res.loadTexture("res/images/weapons/axe1h.png", "axe1h");
+		res.loadTexture("res/images/weapons/axe2h.png", "axe2h");
+		res.loadTexture("res/images/weapons/hammer1h.png", "hammer1h");
+		res.loadTexture("res/images/weapons/hammer2h.png", "hammer2h");
+		res.loadTexture("res/images/weapons/spear1h.png", "spear1h");
+		res.loadTexture("res/images/weapons/spear2h.png", "spear2h");
+		res.loadTexture("res/images/weapons/sword1h.png", "sword1h");
+		res.loadTexture("res/images/weapons/sword2h.png", "sword2h");
+		
+		res.loadTexture("res/images/lootBackground.png", "lootBackground");
+		
 		
 		sb = new SpriteBatch();
 		cam = new OrthographicCamera();

@@ -5,21 +5,36 @@ import static com.bj.pigport.handlers.B2DVars.PPM;
 import java.security.InvalidParameterException;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.bj.pigport.main.Game;
 import com.bj.pigport.states.Play;
 import com.bj.pigport.entities.B2DSprite;
 import com.bj.pigport.entities.enemy.bosstypes.FlyingBall;
+import com.bj.pigport.entities.enemy.controls.EnemyHit;
+import com.bj.pigport.entities.enemy.controls.FlyingChargeController;
+import com.bj.pigport.entities.enemy.controls.GroundChargeController;
+import com.bj.pigport.entities.enemy.controls.LittleGroundMovement;
+import com.bj.pigport.entities.enemy.controls.MissileController;
+import com.bj.pigport.entities.enemy.controls.WarlockAttack;
+import com.bj.pigport.entities.enemy.controls.MeleeWeaponAttack;
 import com.bj.pigport.entities.enemy.enemytypes.BasicFlyingMinion;
 import com.bj.pigport.entities.enemy.enemytypes.BasicMinion;
+import com.bj.pigport.entities.enemy.enemytypes.GroundShooter;
+import com.bj.pigport.entities.enemy.enemytypes.Tank;
+import com.bj.pigport.entities.enemy.enemytypes.Warlock;
 import com.bj.pigport.entities.mapobjects.Loot;
 import com.bj.pigport.entities.player.PlayerData;
+import com.bj.pigport.handlers.B2DVars;
+import com.bj.pigport.handlers.MyInput;
 
 public class Enemy extends B2DSprite{
 	
 	public EnemyData data;
+	private float movementModifier = 0.05f;
 	
 	public Enemy(Body body, boolean boss,int type) {
 		super(body);
@@ -28,6 +43,9 @@ public class Enemy extends B2DSprite{
 		{
 			if(type == 1) data = new BasicMinion();	
 			if(type == 2) data = new BasicFlyingMinion();	
+			if(type == 3) data = new Warlock();	
+			if(type == 4) data = new Tank();
+			if(type == 5) data = new GroundShooter();
 		}
 		else
 		{
@@ -46,8 +64,8 @@ public class Enemy extends B2DSprite{
 		if(this.data.active)
 		{
 			Vector2 vecEnemy = new Vector2(getBody().getPosition().x, getBody().getPosition().y);
-			Vector2 vecEffect = new Vector2(PlayerData.ballEffect.getBody().getPosition().x, PlayerData.ballEffect.getBody().getPosition().y);
-			Vector2 vecPlayer = new Vector2(PlayerData.player.getBody().getPosition().x, PlayerData.player.getBody().getPosition().y);
+			Vector2 vecEffect = new Vector2(Play.player.data.ballEffect.getBody().getPosition().x, Play.player.data.ballEffect.getBody().getPosition().y);
+			Vector2 vecPlayer = new Vector2(Play.player.getBody().getPosition().x, Play.player.getBody().getPosition().y);
 			
 			double distance = (Math.sqrt(((vecEnemy.x - vecPlayer.x) * (vecEnemy.x - vecPlayer.x)) + ((vecEnemy.y - vecPlayer.y) * (vecEnemy.y - vecPlayer.y))));
 			double distanceX = vecEnemy.x - vecPlayer.x;
@@ -63,241 +81,66 @@ public class Enemy extends B2DSprite{
 			float sinPlayer = (float) (Math.sin(Math.toRadians(anglePlayer)));
 			
 			
+			EnemyHit.EnemyHitControls(this, cosPlayer, sinPlayer, cosEffect, sinEffect);
 			
-			
-			if(this.data.hitByMelee && this.data.hitByMeleeTimer == 0 && Play.playerAttackingMelee)
+			if(Play.timeStop == false && this.data.frozen != true && this.data.wind != true)
 			{
-				this.data.hitByMeleeTimer = 50;
-				this.data.health -= 20;
-				
-				getBody().setLinearVelocity(0 , 0);
-				float forceX = (cosPlayer * 200);
-				float forceY = (sinPlayer * 150);
-				getBody().applyForceToCenter(forceX , forceY, true);
-				
-				if(this.data.flying)this.data.setFlyingState(0);
-			}
-			if(this.data.hitByMeleeTimer > 0) this.data.hitByMeleeTimer --;			
-			
-			
-			
-			
-			
-			if(this.data.hitByBallEffect && this.data.hitByBallEffectTimer == 0)
-			{
-				if(PlayerData.ballFrozen)
+				if(this.data.hitByMeleeTimer == 0)
 				{
-					this.data.frozen = true;
-					this.data.frozenTimer = 100;
-				}
-				
-				if(PlayerData.ballFire)
-				{
-					this.data.fire = true;
-					this.data.fireTimer = 200;
-				}
-				
-				if(PlayerData.ballWind)
-				{
-					this.data.wind = true;
-					this.data.windTimer = 101;
-				}
-				
-				this.data.hitByBallEffectTimer = 20;
-			}
-			if(this.data.hitByBallEffectTimer > 0) this.data.hitByBallEffectTimer --;
-			if(this.data.hitByBallEffectTimer == 0) this.data.hitByBallEffect = false;
-			
-			if(this.data.frozen)
-			{
-				this.data.frozenTimer--;
-				if(this.data.frozenTimer == 0) this.data.frozen = false;
-			}
-			
-			if(this.data.fire)
-			{
-				if(this.data.fireTimer % 50 == 0) this.data.health -= 5;
-				
-				this.data.fireTimer--;
-				if(this.data.fireTimer == 0) this.data.fire = false;
-			}
-			
-			if(this.data.wind)
-			{
-				if(this.data.windTimer == 100)
-				{
-					getBody().setLinearVelocity(0 , 0);
-					float forceX = cosEffect * 200;
-					float forceY = (sinEffect * 150) + 200;
-					getBody().applyForceToCenter(forceX , forceY, true);
-				}
-				
-				this.data.windTimer--;
-				if(this.data.windTimer == 0) this.data.wind = false;
-			}
-			
-			if(Play.timeStop == false && this.data.frozen != true && this.data.wind != true && this.data.hitByMeleeTimer == 0)
-			{
-				
-				
-				if(this.data.ground)
-				{
-					if(distance < 3)
-					{
-						
-						if(this.data.lockTimer == 0)
-						{
-							if(vecEnemy.x - vecPlayer.x < 0) this.data.enemyWalkRightLeft = 1;
-							else this.data.enemyWalkRightLeft = -1;
-							this.data.lockTimer = 100;
-						}
-											
-						if(this.data.lockTimer > 0) this.data.lockTimer--;
-						getBody().setLinearVelocity((float) (1.3f * this.data.enemyWalkRightLeft), getBody().getLinearVelocity().y);
-					}
-					else
-					{
-						if(getPosition().x < this.data.SpawnX-2 && this.data.enemyWalkRightLeft == -1)
-						{
-							this.data.enemyWalkRightLeft = 1;
-						}
-						else if(getPosition().x > this.data.SpawnX+2 && this.data.enemyWalkRightLeft == 1)
-						{
-							this.data.enemyWalkRightLeft = -1;
-						}
-						getBody().setLinearVelocity(this.data.enemyWalkRightLeft * 1.3f, getBody().getLinearVelocity().y);
-					}
-				}
-				
-				if(this.data.flying)
-				{
+					if(this.data.groundCharge)GroundChargeController.GroundChargeControls(this, distance, vecEnemy.x, vecPlayer.x);
+					if(this.data.flyingCharge)FlyingChargeController.FlyingChargeControls(this);
+					if(this.data.groundLittleMovement) LittleGroundMovement.LittleGroundMovementControls(this);
 					
-					if(this.data.getFlyingState() == 0)
+					if(this.data.boss[0] == true)
 					{
-						this.data.setFlyPosX(getPosition().x);
-						if(getPosition().y < PlayerData.player.getPosition().y) {this.data.setFlyPosY(getPosition().y + 2); this.data.setFlyRotation(270);}
-						else 											  {this.data.setFlyPosY(getPosition().y - 2); this.data.setFlyRotation(90);}
-						
-						if(getPosition().y < PlayerData.player.getPosition().y && getPosition().x > PlayerData.player.getPosition().x)this.data.setFlyingState(1);
-						if(getPosition().y > PlayerData.player.getPosition().y && getPosition().x > PlayerData.player.getPosition().x)this.data.setFlyingState(2);
-						if(getPosition().y < PlayerData.player.getPosition().y && getPosition().x < PlayerData.player.getPosition().x)this.data.setFlyingState(3);
-						if(getPosition().y > PlayerData.player.getPosition().y && getPosition().x < PlayerData.player.getPosition().x)this.data.setFlyingState(4);
-					}
-					if(this.data.getFlyingState() == 1 | this.data.getFlyingState() == 2 | this.data.getFlyingState() == 3 | this.data.getFlyingState() == 4)
-					{
-						getBody().setTransform( (float) ((this.data.getFlyPosX()) + (2f * Math.cos((this.data.getFlyRotation())/58f))) , (float) ((this.data.getFlyPosY()) + (2f * Math.sin((this.data.getFlyRotation())/58f))) , 0);
-						if(this.data.getFlyingState() == 1 | this.data.getFlyingState() == 4) this.data.setFlyRotation(this.data
-								.getFlyRotation() + 1);
-						if(this.data.getFlyingState() == 2 | this.data.getFlyingState() == 3) this.data.setFlyRotation(this.data
-								.getFlyRotation() - 1);
-						if(this.data.getFlyingState() == 1 | this.data.getFlyingState() == 4) if(this.data.getFlyRotation() == 360) this.data.setFlyRotation(0);
-						if(this.data.getFlyingState() == 2 | this.data.getFlyingState() == 3) if(this.data.getFlyRotation() == 0) this.data.setFlyRotation(360);
-						if(this.data.getFlyingState() == 1 | this.data.getFlyingState() == 3) if(this.data.getFlyRotation() == 90) this.data.setFlyingState(5);
-						if(this.data.getFlyingState() == 2 | this.data.getFlyingState() == 4) if(this.data.getFlyRotation() == 270) this.data.setFlyingState(5);
-					}
-					else if(this.data.getFlyingState() == 5)
-					{
-						float x = (PlayerData.player.getPosition().x - getPosition().x) * 0.8f;
-						float y = (PlayerData.player.getPosition().y - getPosition().y) * 0.8f;
+						float x = (Play.player.getPosition().x - getPosition().x) * 0.2f;
+						float y = (Play.player.getPosition().y - getPosition().y) * 0.2f;
 						
 						getBody().setLinearVelocity(x, y);
-						
-						if( (Math.sqrt (Math.pow(x,2) + Math.pow(y,2)))  < 3) this.data.setFlyingState(6);
-						
-						if(this.data.getFlyingState() == 6)
-						{
-							getBody().setLinearVelocity(x, y);
-							this.data.setFlyingState(7);
-						}
-					}
-					
-					if(this.data.getFlyingState() == 7)
-					{
-						this.data.setFlyChargeTimer(this.data
-								.getFlyChargeTimer() + 1);
-						if(this.data.getFlyChargeTimer() > 120)
-						{
-							this.data.setFlyingState(0);
-							this.data.setFlyChargeTimer(0);
-						}
 					}
 				}
 				
-				
-				
-				if(this.data.missile)
-				{
-					
-					this.data.missileCDTimer++;
-					if(this.data.missileCDTimer == 200)
-					{
-						this.data.missileShootTimer = (this.data.missilesNumber * 20) + 5;
-						this.data.missilesNextToFire = this.data.missilesNumber - 1;
-					}
-					
-					if(this.data.missileShootTimer > 0) 
-					{
-						this.data.missileShootTimer--;
-					
-						if(this.data.missileShootTimer % 20 == 0)
-						{
-							this.data.enemyMissiles[this.data.missilesNextToFire].getBody().setTransform(getBody().getPosition(), 0);
-							this.data.enemyMissiles[this.data.missilesNextToFire].getBody().setLinearVelocity(0 , 0);
-							
-							float forceX = (cosPlayer * 150);
-							float forceY = (sinPlayer * 150);
-							this.data.enemyMissiles[this.data.missilesNextToFire].getBody().applyForceToCenter(-forceX , -forceY, true);
-							
-							this.data.missilesNextToFire--;
-							
-							if(this.data.missilesNextToFire == -1)
-							{
-								this.data.missileShootTimer = 0;
-								this.data.missileCDTimer = 0;
-							}
-						}
-					}
-					
-					
-					
-					
-					
-					if(this.data.enemyMissileReset)
-					{
-						//this.data.enemyMissiles.getBody().setTransform(1000, 1000, 0);
-						//this.data.enemyMissiles.getBody().setLinearVelocity(0 , 0);
-						//this.data.enemyMissileReset = false;
-					}
-				}
-				
-				
-				
-				
-				if(this.data.boss[0] == true)
-				{
-					float x = (PlayerData.player.getPosition().x - getPosition().x) * 0.2f;
-					float y = (PlayerData.player.getPosition().y - getPosition().y) * 0.2f;
-					
-					getBody().setLinearVelocity(x, y);
-				}
-				
-				
-				
-				
-				
-				
+				if(this.data.meleeWeaponAttack) MeleeWeaponAttack.MeleeWeaponAttackControls(this, distance, distanceX, vecPlayer.y);
+				if(this.data.missile) MissileController.MissileControls(this , cosPlayer, sinPlayer, distance);				
+				if(this.data.warlock) WarlockAttack.WarlockAttackControls(this, vecEnemy, vecPlayer, distance);
 			}
 			
 			
 			if(this.data.health < 1)
 			{
-				Loot.createItem(getPosition().x , getPosition().y);
+				Loot.createItem(getPosition().x , getPosition().y, null);
 				
 				getBody().setTransform(1000, 1000, 0);
 				this.data.active = false;
 				getBody().setGravityScale(0);
 			}
 		}
+	}
+	
+	public void enemyRender(SpriteBatch sb)
+	{
+		this.render(sb);
+		for(int ii = 0; ii < this.data.missilesNumber; ii++)this.data.enemyMissiles[ii].render(sb);
+		
+		if(this.data.meleeWeaponAttack)
+		{
+			sb.begin();
+			sb.draw(this.data.texWeapon, (this.getPosition().x * 100) - (this.data.texWeapon.getWidth()/2), 
+					(this.getPosition().y * 100) - (this.data.texWeapon.getHeight()/2),
+					this.data.texWeapon.getWidth() / 2, 
+					this.data.texWeapon.getHeight() / 2, 
+					this.data.texWeapon.getWidth(), 
+					this.data.texWeapon.getHeight(),  
+					1, 1, this.data.weaponRotation * this.data.direction, 0, 0, 
+					this.data.texWeapon.getWidth(), 
+					this.data.texWeapon.getHeight(), true, false);
+			sb.end();
+		}
+		
+		sb.begin();
+		sb.draw(this.data.enemyHealth, (this.getPosition().x * 100) - 50, (this.getPosition().y * 100) + (this.data.getTexEnemy().getHeight()/2), ((float) (((100) / (float) (this.data.getMaxHealth())) * (this.data.getHealth()))) , 8);
+		sb.draw(this.data.enemyHealthLeft, (this.getPosition().x * 100) + 50, (this.getPosition().y * 100) + (this.data.getTexEnemy().getHeight()/2),	 -((float) (100) - (((100) / (float) (this.data.getMaxHealth())) * (this.data.getHealth()))) , 8);
+		sb.end();
 	}
 }
 

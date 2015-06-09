@@ -26,39 +26,6 @@
    eJxjZGBgYKQyphYYKubxA7EAFc1jB2KOIWaeEBALA7HIIHXfUDOPC4i5gZhnkLqPHuahp6nB5r6hah41MQBMrwHR
   </data>
  </layer>
- <objectgroup name="enemyHard" width="20" height="20" visible="0">
-  <object x="606" y="1119">
-   <ellipse/>
-  </object>
- </objectgroup>
- <objectgroup name="fairyDustHard" width="20" height="20" visible="0">
-  <object x="336" y="1131">
-   <ellipse/>
-  </object>
-  <object x="783" y="670">
-   <ellipse/>
-  </object>
- </objectgroup>
- <objectgroup name="enemyMedium" width="20" height="20" visible="0">
-  <object x="690" y="1140"/>
- </objectgroup>
- <objectgroup name="fairyDustMedium" width="20" height="20" visible="0">
-  <object x="792" y="1172">
-   <ellipse/>
-  </object>
-  <object x="540" y="1172">
-   <ellipse/>
-  </object>
-  <object x="1054" y="852">
-   <ellipse/>
-  </object>
-  <object x="730" y="656">
-   <ellipse/>
-  </object>
-  <object x="476" y="404">
-   <ellipse/>
-  </object>
- </objectgroup>
  <objectgroup name="fairyDustEasy" width="20" height="20">
   <object x="416" y="1180">
    <ellipse/>
@@ -106,13 +73,17 @@
    <ellipse/>
   </object>
  </objectgroup>
- <objectgroup name="BasicFlyingMinion" width="20" height="20"/>
- <objectgroup name="destructables" width="20" height="20">
-  <object x="605" y="1095"/>
- </objectgroup>
- <objectgroup name="BossFlyingBall" width="20" height="20">
-  <object x="803" y="734">
+ <objectgroup name="boss1" width="20" height="20">
+  <object x="668" y="804">
    <ellipse/>
   </object>
  </objectgroup>
+ <objectgroup name="destructables" width="20" height="20">
+  <object x="605" y="1095"/>
+ </objectgroup>
+ <objectgroup name="warlock" width="20" height="20"/>
+ <objectgroup name="tank" width="20" height="20"/>
+ <objectgroup name="groundShooter" width="20" height="20"/>
+ <objectgroup name="basicFlying" width="20" height="20"/>
+ <objectgroup name="basicGround" width="20" height="20"/>
 </map>

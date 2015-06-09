@@ -3,9 +3,7 @@ package com.bj.pigport.handlers;
 import java.util.Stack;
 
 import com.bj.pigport.main.Game;
-import com.bj.pigport.states.BetweenLevel;
 import com.bj.pigport.states.GameState;
-import com.bj.pigport.states.LevelSelect;
 import com.bj.pigport.states.MainMenu;
 import com.bj.pigport.states.Play;
 import com.bj.pigport.states.Town;
@@ -48,10 +46,6 @@ public class GameStateManager {
 			return new MainMenu(this);
 		if(state == PLAY)
 			return new Play(this);
-		if(state == LEVELSELECT)
-			return new LevelSelect(this);
-		if(state == BETWEENLEVEL)
-			return new BetweenLevel(this);
 		if(state == TOWN)
 			return new Town(this);
 		return null;

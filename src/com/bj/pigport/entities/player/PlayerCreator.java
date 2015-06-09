@@ -24,9 +24,6 @@ import com.bj.pigport.states.Play;
 
 public class PlayerCreator {
 	
-	
-	
-	
 	public PlayerCreator()
 	{
 		
@@ -39,14 +36,30 @@ public class PlayerCreator {
 		PolygonShape shape = new PolygonShape();
 		
 		//create player
-		bdef.position.set( PlayerData.playerSpawnX, PlayerData.playerSpawnY);
+		bdef.position.set(1000,1000);
 		bdef.type = BodyType.DynamicBody;
 		Body body = world.createBody(bdef);
+		
+		Play.player = new Player(body);
+		
+		shape.setAsBox(30 / PPM, 2 / PPM, new Vector2(0, -54 / PPM), 0);
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_PLAYER; //| B2DVars.BIT_BALL;
+		fdef.filter.maskBits = B2DVars.BIT_COLLTHIN;
+		body.createFixture(fdef).setUserData("collThin");
+		
+		shape.setAsBox(30 / PPM, 2 / PPM, new Vector2(0, -30 / PPM), 0);
+		fdef.shape = shape;
+		fdef.filter.categoryBits = B2DVars.BIT_PLAYER; //| B2DVars.BIT_BALL;
+		fdef.filter.maskBits = B2DVars.BIT_COLLTHIN;
+		fdef.isSensor = true;
+		body.createFixture(fdef).setUserData("collThinDisabler");
 		
 		shape.setAsBox(33 / PPM, 56 / PPM);
 		fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVars.BIT_PLAYER; //| B2DVars.BIT_BALL;
-		fdef.filter.maskBits = B2DVars.BIT_COLL | B2DVars.BIT_DUST | B2DVars.BIT_CAGE | B2DVars.BIT_TRAP | B2DVars.BIT_END | B2DVars.BIT_MOVINGPLATFORM | B2DVars.BIT_FIREARROW | B2DVars.BIT_LOOT;
+		fdef.filter.maskBits = B2DVars.BIT_COLL | B2DVars.BIT_END | B2DVars.BIT_MOVINGPLATFORM | B2DVars.BIT_LOOT;
+		fdef.isSensor = false;
 		body.createFixture(fdef).setUserData("player");
 		
 		//create enemy sensor
@@ -69,7 +82,7 @@ public class PlayerCreator {
 		shape.setAsBox(20 / PPM, 2 / PPM, new Vector2(0, -54 / PPM), 0);
 		fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-		fdef.filter.maskBits = B2DVars.BIT_COLL | B2DVars.BIT_MOVINGPLATFORM;
+		fdef.filter.maskBits = B2DVars.BIT_COLL | B2DVars.BIT_MOVINGPLATFORM | B2DVars.BIT_COLLTHIN;
 		fdef.isSensor = true;
 		body.createFixture(fdef).setUserData("foot");
 		//create foot sensor for platforms
@@ -108,9 +121,10 @@ public class PlayerCreator {
 		fdef.isSensor = true;
 		body.createFixture(fdef).setUserData("leftSensorPLF");
 		
+		/*
 		//Create Attack Radius
 		CircleShape shapeC = new CircleShape();
-		shapeC.setRadius(95 / PPM);
+		shapeC.setRadius(300 / PPM / 2);
 		shapeC.setPosition(new Vector2(0, 1 / PPM));
 		fdef.shape = shapeC;
 		fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
@@ -118,10 +132,12 @@ public class PlayerCreator {
 		fdef.isSensor = true;
 		body.createFixture(fdef).setUserData("playerAttack");
 		
-		
+		*/
 		// create player
-		PlayerData.player = new Player(body);
-		body.setUserData(PlayerData.player);
+		
+		body.setUserData(Play.player);
+		
+		
 		shape.dispose();
 	}
 

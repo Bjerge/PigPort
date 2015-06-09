@@ -90,10 +90,10 @@ public class HUD {
 		//Draws Dot Aim
 		if (MyInput.isDown())
 		{
-			for(float i = 1; i < (6.5f + (0.5 * Player.ballDotLevel)) ;)
+			for(float i = 1; i < (6.5f + (0.5 * Play.player.data.ballDotLevel)) ;)
 			{
-				Ball.getDrawBall(i);
-				sb.draw(dot,Ball.xBallCoordinate, Ball.yBallCoordinate);
+				Play.player.data.ball.getDrawBall(i);
+				sb.draw(dot,Play.player.data.ball.xBallCoordinate, Play.player.data.ball.yBallCoordinate);
 				i += 0.5f;
 			}
 		}
@@ -101,9 +101,9 @@ public class HUD {
 		
 		// draw icon amount
 		
-		drawString(sb, Player.numFairyDust + "", 170, 645);
+		drawString(sb, Play.player.data.numFairyDust + "", 170, 645);
 		
-		drawString(sb, Player.numFairyCage + " / " + Player.totalFairyCage,45, 645);
+		drawString(sb, Play.player.data.numFairyCage + " / " + Play.player.data.totalFairyCage,45, 645);
 		
 		if(Play.timeStop)sb.draw(timeStopFog, 0, 0);
 		

@@ -55,6 +55,8 @@ public class GameButtonStandard {
 		{
 			this.picture = tex;
 			drawPicture = true;
+			
+			System.out.println(string);
 		}
 		
 		this.LTcorner = new TextureRegion(PlainButtonTex, 0, 0, PlainButtonTex.getWidth()/2, PlainButtonTex.getHeight()/2);

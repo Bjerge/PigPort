@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.bj.pigport.entities.B2DSprite;
 import com.bj.pigport.entities.mapobjects.Loot;
+import com.bj.pigport.entities.player.PlayerData;
 import com.bj.pigport.handlers.B2DVars;
 import com.bj.pigport.main.Game;
 import com.bj.pigport.states.Play;
@@ -47,21 +48,18 @@ public class Destructables extends B2DSprite{
 	{
 		if(active)
 		{
-			if(Play.playerAttackingMelee && playerMeleeContact && takingDamageCD == 0){
+			if(playerMeleeContact){
 				health -= 10;
-				takingDamageCD = 20;
 			}
-			if(takingDamageCD > 0) takingDamageCD--;
 			
 			if(health < 1)
 			{
-				for(int i = 0; i < 20; i++)Loot.createItem(getPosition().x , getPosition().y);
+				for(int i = 0; i < 10; i++)Loot.createItem(getPosition().x , getPosition().y, null);
 				getBody().setTransform(1000, 1000, 0);
 				getBody().setGravityScale(0);
 				active = false;
 			}
 		}
-		
 	}
 	
 	
@@ -121,7 +119,7 @@ public class Destructables extends B2DSprite{
 			shape.setAsBox( destructables[i].tex.getWidth() / 200f, destructables[i].tex.getHeight() / 200f);
 			fdef.shape = shape;
 			fdef.filter.categoryBits = B2DVars.BIT_OBJECTS;
-			fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+			fdef.filter.maskBits = B2DVars.BIT_WEAPON;
 			fdef.isSensor = true;
 			body.createFixture(fdef).setUserData("destructables"+i);
 			

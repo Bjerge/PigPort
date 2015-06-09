@@ -26,9 +26,9 @@ public class TimeStop {
 	public static void TimeStopControls()
 	{
 
-		if(MyInput.isPressed(MyInput.BUTTON3) || MyInput.isPressed(MyInput.BUTTON6))
+		if(MyInput.isPressed(MyInput.BUTTON3) || MyInput.isPressed(MyInput.BUTTON7))
 		{
-			if(Play.timeStop != true && Player.numFairyDust > -1)
+			if(Play.timeStop != true && Play.player.data.numFairyDust > -1)
 				{
 				Play.timeStop = true;
 					//Player.numFairyDust--;
@@ -39,7 +39,7 @@ public class TimeStop {
 		if(Play.timeStop)
 		{
 			timeStopTimer++;
-			if(timeStopTimer == (30 + (20 * Player.timeStopLevel))) Play.timeStop = false;
+			if(timeStopTimer == (30 + (20 * Play.player.data.timeStopLevel))) Play.timeStop = false;
 		}
 		
 			
@@ -47,45 +47,45 @@ public class TimeStop {
 		{
 			if(timeStopStarted != true)
 			{
-				timeStopPlayerVelocityX = PlayerData.player.getBody().getLinearVelocity().x;
-				timeStopPlayerVelocityY = PlayerData.player.getBody().getLinearVelocity().y;
-				PlayerData.player.getBody().setGravityScale(0f);
+				timeStopPlayerVelocityX = Play.player.getBody().getLinearVelocity().x;
+				timeStopPlayerVelocityY = Play.player.getBody().getLinearVelocity().y;
+				Play.player.getBody().setGravityScale(0f);
 
 				timeStopStarted = true;
 			}
-			PlayerData.player.getBody().setLinearVelocity(0, 0);
+			Play.player.getBody().setLinearVelocity(0, 0);
 			
-			if(PlayerData.player.tex.equals(Game.res.getTexture("girlRightPig"))){
-				PlayerData.player.tex = Game.res.getTexture("girlRightPig");
-				TextureRegion[] spritesRight = TextureRegion.split(PlayerData.player.tex, 91, 114)[0];
-				PlayerData.player.setAnimation(spritesRight, 1 / 0.1f);
+			if(Play.player.data.tex.equals(Game.res.getTexture("girlRightPig"))){
+				Play.player.data.tex = Game.res.getTexture("girlRightPig");
+				TextureRegion[] spritesRight = TextureRegion.split(Play.player.data.tex, 91, 114)[0];
+				Play.player.setAnimation(spritesRight, 1 / 0.1f);
 			}
 			
-			if(PlayerData.player.tex.equals(Game.res.getTexture("girlLeftPig"))){
-				PlayerData.player.tex = Game.res.getTexture("girlLeftPig");
-				TextureRegion[] spritesLeft = TextureRegion.split(PlayerData.player.tex, 91, 114)[0];
-				PlayerData.player.setAnimation(spritesLeft, 1 / 0.1f);
+			if(Play.player.data.tex.equals(Game.res.getTexture("girlLeftPig"))){
+				Play.player.data.tex = Game.res.getTexture("girlLeftPig");
+				TextureRegion[] spritesLeft = TextureRegion.split(Play.player.data.tex, 91, 114)[0];
+				Play.player.setAnimation(spritesLeft, 1 / 0.1f);
 			}
 			
 		}
 		else if(Play.timeStop != true && timeStopStarted == true)
 		{
 			
-			PlayerData.player.getBody().setLinearVelocity(timeStopPlayerVelocityX , timeStopPlayerVelocityY );		
-			PlayerData.player.getBody().setGravityScale(1);
+			Play.player.getBody().setLinearVelocity(timeStopPlayerVelocityX , timeStopPlayerVelocityY );		
+			Play.player.getBody().setGravityScale(1);
 			timeStopStarted = false;
 			timeStopTimer = 0;
 
-			if(PlayerData.player.tex.equals(Game.res.getTexture("girlRightPig"))){
-				PlayerData.player.tex = Game.res.getTexture("girlRightPig");
-				TextureRegion[] spritesRight = TextureRegion.split(PlayerData.player.tex, 91, 114)[0];
-				PlayerData.player.setAnimation(spritesRight, 1 / 8f);
+			if(Play.player.data.tex.equals(Game.res.getTexture("girlRightPig"))){
+				Play.player.data.tex = Game.res.getTexture("girlRightPig");
+				TextureRegion[] spritesRight = TextureRegion.split(Play.player.data.tex, 91, 114)[0];
+				Play.player.setAnimation(spritesRight, 1 / 8f);
 			}
 			
-			if(PlayerData.player.tex.equals(Game.res.getTexture("girlLeftPig"))){
-				PlayerData.player.tex = Game.res.getTexture("girlLeftPig");
-				TextureRegion[] spritesLeft = TextureRegion.split(PlayerData.player.tex, 91, 114)[0];
-				PlayerData.player.setAnimation(spritesLeft, 1 / 8f);
+			if(Play.player.data.tex.equals(Game.res.getTexture("girlLeftPig"))){
+				Play.player.data.tex = Game.res.getTexture("girlLeftPig");
+				TextureRegion[] spritesLeft = TextureRegion.split(Play.player.data.tex, 91, 114)[0];
+				Play.player.setAnimation(spritesLeft, 1 / 8f);
 			}
 		}
 	}

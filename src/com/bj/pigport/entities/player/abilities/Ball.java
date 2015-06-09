@@ -9,7 +9,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bj.pigport.main.Game;
@@ -24,27 +26,29 @@ import com.bj.pigport.handlers.MyInput;
 
 public class Ball extends B2DSprite{
 
-	public static int sensingBallRightLeft;
-	public static int sensingBallTopDown;
-	public static float ballCoordsX;
-	public static float ballCoordsY;
+	public boolean shootNoTp = false;
 	
+	public int sensingBallRightLeft;
+	public int sensingBallTopDown;
+	public float ballCoordsX;
+	public float ballCoordsY;
 	
+	public int collThinDisableTimer = 0;
 	
-	private static double PC1;
-	private static double PC2;
-	private static double vectorMyAss;
-	private static float forceX;
-	private static float forceY;
-	private static float PCLength;
-	public static float startVelocityX;
-	public static float startVelocityY;
-	private static float gravity = (float) -9.81;
-	public static float modifier = (float) 6.05;
-	public static float PCLengthAim;
-	private static float startVelocityModifier;
-	public static float xBallCoordinate;
-	public static float yBallCoordinate;
+	private double PC1;
+	private double PC2;
+	private double vectorMyAss;
+	private float forceX;
+	private float forceY;
+	private float PCLength;
+	public float startVelocityX;
+	public float startVelocityY;
+	private float gravity = (float) -9.81;
+	public float modifier = (float) 6.05;
+	public float PCLengthAim;
+	private float startVelocityModifier;
+	public float xBallCoordinate;
+	public float yBallCoordinate;
 	
 	public Ball(Body body) {
 		super(body);
@@ -56,34 +60,43 @@ public class Ball extends B2DSprite{
 	}
 	
 	
-	public static void BallControls()
+	public void BallControls()
 	{
-		if(MyInput.isReleased() && Play.isPlayerTeleporting != true && Player.numFairyDust > 0 && PCLengthAim > 80){
-			getDrawBall(0);
-			Player.numFairyDust--;
-			Play.drawBall = true;
-			Play.isPlayerTeleporting = true;
-			Play.tpNow = false;
-			Play.resetSlowCam();
-			PlayerData.ball.getBody().setGravityScale(1);
-			PlayerData.ball.getBody().setTransform(PlayerData.player.getPosition(), 0);
-			PlayerData.ball.getBody().applyForceToCenter(startVelocityX * modifier, startVelocityY * modifier, true);
+		if(collThinDisableTimer == 1)
+		{
+			collThinManager(0);
+			collThinDisableTimer = 2;
+		}
+		if(collThinDisableTimer > 0)
+		{
+			collThinDisableTimer++;
+			if(collThinDisableTimer > 15)
+			{
+				collThinManager(1);
+				collThinDisableTimer = 0;
+			}
 		}
 		
-		// Teleports Player to Ball location when ball hit's ground!
 		
 		
-		if(Play.isPlayerTeleporting && Play.tpNow)
+		if(Play.isPlayerTeleporting && Play.tpNow ||
+				Play.isPlayerTeleporting && this.getBody().getLinearVelocity().y == 0.0f)
 		{
+			Play.playerTeleportX = this.getPosition().x;
+			Play.playerTeleportY = this.getPosition().y;	
+			Play.player.data.ballEffect.x = this.getPosition().x;
+			Play.player.data.ballEffect.y = this.getPosition().y;
+			
+			
 			Play.tpNow = false;
-			PlayerData.ball.getBody().setGravityScale(0);
-			PlayerData.ball.getBody().setLinearVelocity(0, 0);
-			PlayerData.ball.getBody().setTransform(1000, 1000, 0);
+			this.getBody().setGravityScale(0);
+			this.getBody().setLinearVelocity(0, 0);
+			this.getBody().setTransform(1000, 1000, 0);
 			
 			Play.resetSlowCam();
 			
-			Play.playerTeleportX = ballCoordsX;
-			Play.playerTeleportY = ballCoordsY;
+			//Play.playerTeleportX = ballCoordsX;
+			//Play.playerTeleportY = ballCoordsY;
 			
 			//Check if there is collision on right (1) or left (2)
 			if(sensingBallRightLeft == 1){
@@ -99,16 +112,50 @@ public class Ball extends B2DSprite{
 			else if(sensingBallTopDown == 2){
 				Play.playerTeleportY = Play.playerTeleportY + (50 / PPM);
 			}
-			PlayerData.player.getBody().setLinearVelocity(0, 0);
-			PlayerData.player.getBody().setTransform(Play.playerTeleportX, Play.playerTeleportY, 0);
+			
 			Play.isPlayerTeleporting = false;
 			Play.timeStop = false;
 			Play.playerJumpVelocityX = 0;
-			
-			BallEffect.BallEffectTimer = 10;
+			if(this.shootNoTp)
+			{
+				
+			}
+			else
+			{
+				//Play.player.getBody().setLinearVelocity(0, 0);
+				//Play.player.getBody().setTransform(Play.playerTeleportX, Play.playerTeleportY, 0); 
+			}
+			Play.player.data.ballEffect.BallEffectTimer = 20;
 		}
+		
+		if(MyInput.isReleased() && Play.isPlayerTeleporting) this.shootNoTp = true;
+		
+		if(MyInput.isReleased() && Play.isPlayerTeleporting != true && PCLengthAim > 80){
+			getDrawBall(0);
+			Play.player.data.numFairyDust--;
+			Play.drawBall = true;
+			Play.isPlayerTeleporting = true;
+			Play.tpNow = false;
+			this.shootNoTp = false;
+			Play.resetSlowCam();
+			this.getBody().setGravityScale(1);
+			this.getBody().setTransform(Play.player.getPosition(), 0);
+			this.getBody().applyForceToCenter(startVelocityX * modifier, startVelocityY * modifier, true);
+		}
+		
 	}
 	
+	public void collThinManager(int i)
+	{
+		Filter filter = this.getBody().getFixtureList().first().getFilterData();
+		short bits = filter.maskBits;
+		
+		if(i == 0)bits = B2DVars.BIT_COLL;
+		if(i == 1)bits = B2DVars.BIT_COLLTHIN;
+		
+		filter.maskBits = bits;
+		this.getBody().getFixtureList().get(0).setFilterData(filter);
+	}
 	
 	public static void createBall(World world){
 		BodyDef bdef = new BodyDef();
@@ -119,11 +166,28 @@ public class Ball extends B2DSprite{
 		bdef.type = BodyType.DynamicBody;
 		Body body = world.createBody(bdef);
 		CircleShape shape = new CircleShape();
+		PolygonShape shapeB = new PolygonShape();
+		
+		shapeB.setAsBox(12 / PPM, 2 / PPM, new Vector2(0, -12 / PPM), 0);
+		fdef.shape = shapeB;
+		fdef.filter.categoryBits = B2DVars.BIT_BALL; //| B2DVars.BIT_BALL;
+		fdef.filter.maskBits = B2DVars.BIT_COLLTHIN;
+		fdef.isSensor = false;
+		body.createFixture(fdef).setUserData("collThin");
+		
+		shapeB.setAsBox(12 / PPM, 2 / PPM, new Vector2(0, 12 / PPM), 0);
+		fdef.shape = shapeB;
+		fdef.filter.categoryBits = B2DVars.BIT_BALL; //| B2DVars.BIT_BALL;
+		fdef.filter.maskBits = B2DVars.BIT_COLLTHIN;
+		fdef.isSensor = true;
+		body.createFixture(fdef).setUserData("ballCollThinDisabler");
+		
 		shape.setRadius(12 / PPM);
 		fdef.shape = shape;
 		//fdef.shape = shape;
 		fdef.filter.categoryBits = B2DVars.BIT_BALL; //| B2DVars.BIT_BALL;
-		fdef.filter.maskBits = B2DVars.BIT_COLL | B2DVars.BIT_ENEMY | B2DVars.BIT_MOVINGPLATFORM;
+		fdef.filter.maskBits = B2DVars.BIT_COLL | B2DVars.BIT_MOVINGPLATFORM;
+		fdef.isSensor = false;
 		body.createFixture(fdef).setUserData("ball");			
 		//create foot sensor
 		//cshape.setRadius(8 / PPM);
@@ -166,15 +230,16 @@ public class Ball extends B2DSprite{
 		fdef.filter.maskBits = B2DVars.BIT_COLL | B2DVars.BIT_MOVINGPLATFORM;
 		fdef.isSensor = true;
 		body.createFixture(fdef).setUserData("ballSensorDown");
-		PlayerData.ball = new Ball(body);
-		body.setUserData(PlayerData.ball);
+		Play.player.data.ball = new Ball(body);
+		body.setUserData(Play.player.data.ball);
 		
 		body.setGravityScale(0);		
 		shape.dispose();
+		shapeB.dispose();
 	}
 	
 	//public static void getDrawBall(float t, float camPosX, float camPosY)
-	public static void getDrawBall(float t)
+	public void getDrawBall(float t)
 	{
 		
 		PC1 = Gdx.input.getX()-((Game.V_WIDTH * Game.SCALE)/2);

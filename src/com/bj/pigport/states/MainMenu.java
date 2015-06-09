@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.bj.pigport.entities.player.PlayerData;
 import com.bj.pigport.handlers.GameButton;
 import com.bj.pigport.handlers.GameStateManager;
 import com.bj.pigport.main.Game;
@@ -17,8 +18,12 @@ public class MainMenu extends GameState{
 	private GameButton playButton;
 	private TextureRegion bg;
 	
+	public static PlayerData [] data = new PlayerData[1];
+	
 	public MainMenu(GameStateManager gsm) {
 		super(gsm);
+		
+		data [0] = new PlayerData();
 		
 		Texture tex = Game.res.getTexture("baggrundMain");
 		bg = new TextureRegion(tex, 0, -1, tex.getWidth(), tex.getHeight());

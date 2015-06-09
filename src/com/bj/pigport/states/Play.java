@@ -13,22 +13,18 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.bj.pigport.entities.map.MapCreator;
 import com.bj.pigport.entities.mapobjects.FairyCage;
 import com.bj.pigport.entities.mapobjects.FairyDust;
 import com.bj.pigport.entities.mapobjects.FireArrow;
@@ -36,11 +32,10 @@ import com.bj.pigport.entities.mapobjects.Loot;
 import com.bj.pigport.entities.mapobjects.Destructables;
 import com.bj.pigport.entities.mapobjects.MovingPlatform;
 import com.bj.pigport.entities.mapobjects.Trap;
-import com.bj.pigport.entities.player.abilities.AttackAnimation;
-import com.bj.pigport.entities.player.abilities.AttackAnimationCD;
 import com.bj.pigport.entities.player.abilities.Ball;
 import com.bj.pigport.entities.player.abilities.BallEffect;
 import com.bj.pigport.entities.player.abilities.TimeStop;
+import com.bj.pigport.entities.player.abilities.Weapon;
 import com.bj.pigport.entities.enemy.Enemy;
 import com.bj.pigport.entities.hud.HUD;
 import com.bj.pigport.entities.hud.Inventory;
@@ -51,7 +46,9 @@ import com.bj.pigport.entities.player.PlayerController;
 import com.bj.pigport.entities.player.PlayerCreator;
 import com.bj.pigport.entities.player.PlayerData;
 import com.bj.pigport.handlers.B2DVars;
+import com.bj.pigport.handlers.GameButtonStandard;
 import com.bj.pigport.handlers.GameStateManager;
+import com.bj.pigport.handlers.LootButton;
 import com.bj.pigport.handlers.MyContactListener;
 import com.bj.pigport.handlers.MyInput;
 import com.bj.pigport.main.Game;
@@ -72,7 +69,7 @@ public class Play extends GameState{
 	
 	public static TiledMap tileMap;
 	private float tileSize;
-	private OrthogonalTiledMapRenderer tmr;
+	public OrthogonalTiledMapRenderer tmr;
 		
 	public static boolean timeStop = false;
 	
@@ -80,14 +77,12 @@ public class Play extends GameState{
 	public static boolean isPlayerTeleporting = false;
 	public static boolean tpNow = false;
 
-	
+	public static Player player;
 	
 	
 	public static float playerTeleportX;
 	public static float playerTeleportY;
 	
-	private Array<FairyDust> fairyDust;
-	private Array<FairyCage> fairyCage;
 	private Array<Trap> trap;
 	
 	
@@ -127,21 +122,16 @@ public class Play extends GameState{
 	
 	public boolean TPAnimationReady = false;
 	
-	
-	
 	public boolean playerJumpStarted = false;
 	public static float playerJumpVelocityX;
 	public boolean midAirDirectionChanged = false;
 	
-	public static boolean playerAttackingMelee = false;
-	public static int playerAttackingEnemyTimer = 0;
 	public static Array<Body> enemiesThatWillGetKilled;
 	public static int playerAttackCDTimer = 0;
 	
 	public static int enemyNumberHitFirst = 100;
 	public static int enemyNumberHitSecond = 100;
 	public static boolean wasAnEnemyDeleted = false;
-	
 	
 	public float [] fireArrowSpawnX = new float [100];
 	public float [] fireArrowSpawnY = new float [100];
@@ -157,20 +147,10 @@ public class Play extends GameState{
 	public static int fireArrowNumberInitialised;
 	public static boolean [] fireArrowInitialised;
 	
-
 	public static float [] FASpawnSlotX;
 	public static float [] FASpawnSlotY;
 	
-	public static AttackAnimation attackAnimation;
-	
-	public static AttackAnimationCD attackAnimationCD;
-	
-	private int [] mapSize = new int [2];
-	
-	
-	
-	//private static boolean timeStopFogBoolean = false;
-	
+	public static int [] mapSize = new int [2];
 	
 	public Play(GameStateManager gsm) {
 		super(gsm);
@@ -184,14 +164,17 @@ public class Play extends GameState{
 		MyContactListener.numFootContactsBall = 0;
 		
 		Loot.loot = new Loot[200];
+		Loot.lootButton = new LootButton[200];
 		Loot.lootNumber = 0;
 		
-		createPlayerSpawn();
-		createPlayerEnd();
 		PlayerCreator.createPlayer(getWorld());
-		createTiles();
-		createFairyDust();
-		createFairyCage();
+		
+		tileMap = MapCreator.createPlayerSpawn(tileMap, "level" + level);
+		MapCreator.createPlayerEnd(tileMap, world);
+		tmr = MapCreator.createTiles(tileMap, tmr, tileSize, world);
+		
+		//createFairyDust();
+		//createFairyCage();
 		createTrap();
 		EnemyCreator.createEnemy();
 		createMovingPlatform();
@@ -201,6 +184,7 @@ public class Play extends GameState{
 		
 		Ball.createBall(getWorld());
 		BallEffect.createBallEffect(getWorld());
+		Weapon.createWeapon(getWorld(), "axe1h");
 		
 		createFireArrowSpawn();
 		fireArrow = new FireArrow[50];
@@ -220,11 +204,6 @@ public class Play extends GameState{
 			}
 		}
 		
-		
-		createAttackAnimationStar();
-		createAttackAnimationStarCD();
-		
-		
 		// set up box2d cam
 		b2dCam = new OrthographicCamera();
 		b2dCam.setToOrtho(false, 
@@ -233,8 +212,8 @@ public class Play extends GameState{
 		
 		
 		// set up HUD
-		hud = new HUD(PlayerData.player);
-		PlayerData.inventory = new Inventory(PlayerData.player);
+		hud = new HUD(player);
+		player.data.inventory = new Inventory(player);
 		
 		// setup our mini map camera
 	    miniMapCam = new OrthographicCamera(
@@ -248,15 +227,27 @@ public class Play extends GameState{
 	    enemiesThatWillGetKilled = new Array<Body>();
 	    
 	    
-	    playerAttackingMelee = false; 
-		playerAttackingEnemyTimer = 0;
+	    player.data.playerAttackingMelee = false; 
+	    player.data.playerAttackingEnemyTimer = 0;
 		startTheMap();
 	    
 	}
 	
 	public void handleInput() {
 		
-		// mouse/touch input
+		
+		if(MyInput.isPressed(MyInput.BUTTON_INVENTORY) && inventoryActive != true)
+		{
+			player.data.inventory = new Inventory(player);
+			inventoryActive = true;
+		}
+		else if(MyInput.isPressed(MyInput.BUTTON_INVENTORY) && inventoryActive)
+		{
+			player.data.inventory = new Inventory(player);
+			inventoryActive = false;
+		}
+		
+		if(inventoryActive)player.data.inventory.InputUpdater(gsm);
 		
 		if(HUD.returnButton.isClicked()) {
 			getCam().zoom = 1;
@@ -269,254 +260,100 @@ public class Play extends GameState{
 			gsm.setState(GameStateManager.PLAY);
 		}
 		
-		if(MyContactListener.isPlayerAtEnd() && Player.numFairyCage == Player.totalFairyCage)
+		//if(MyContactListener.isPlayerAtEnd() && player.data.numFairyCage == player.data.totalFairyCage)
+		if(MyContactListener.isPlayerAtEnd())
 		{
-			Player.fairyDustCollectedInFinishedMap = Player.numFairyDust;
-			Player.fairyDustCollectedInAllMaps += Player.fairyDustCollectedInFinishedMap;
-			Player.gainedXP = Player.gainedXP + 10 + Player.fairyDustCollectedInFinishedMap;
-			Player.playerExperienceCalculator();
+			player.data.fairyDustCollectedInFinishedMap = player.data.numFairyDust;
+			player.data.fairyDustCollectedInAllMaps += player.data.fairyDustCollectedInFinishedMap;
+			player.data.gainedXP = player.data.gainedXP + 10 + player.data.fairyDustCollectedInFinishedMap;
+			player.playerExperienceCalculator();
 			getCam().zoom = 1;
 			level++;
 			gsm.setState(GameStateManager.PLAY);
 		}
 		
-		if(PlayerData.player.health == 0)
+		if(player.data.health == 0)
 		{
 			startTheMap();
-			Player.gainedXP = 0;	
+			player.data.gainedXP = 0;	
 			gsm.setState(GameStateManager.TOWN); 
 		}
 		
 		
-		if(PlayerData.player.damageContact && Player.damageCD == 0)
+		if(player.data.damageContact && player.data.damageCD == 0)
 		{
-			Player.damageCD = 100;
-			PlayerData.player.health -= 5;	
-		}
-		if(Player.damageCD > 0) Player.damageCD --;
-		
-		if(PlayerData.player.knockBackContact && PlayerData.player.knockBackCD == 0)
-		{
-			PlayerData.player.knockBackCD = 30;
+			player.data.damageCD = 100;
+			player.data.health -= 5;	
 			
-			Vector2 vecPlayer = new Vector2(PlayerData.player.getBody().getPosition().x, PlayerData.player.getBody().getPosition().y);
-			int angleDamage = (int) (Math.toDegrees(Math.atan2(PlayerData.player.knockBackSource.y - vecPlayer.y , PlayerData.player.knockBackSource.x - vecPlayer.x)));
-			if(angleDamage < 0) angleDamage = (360 + angleDamage);	
-			float forceX = (((float) (Math.cos(Math.toRadians(angleDamage)))) * 200);
-			float forceY = (((float) (Math.sin(Math.toRadians(angleDamage)))) * 200);
-			
-			PlayerData.player.getBody().setLinearVelocity(0 , 0);
-			PlayerData.player.getBody().applyForceToCenter(-forceX , -forceY, true);
+			if(player.data.knockBackContact)
+			{
+				player.data.knockBackCD = 30;
+				Vector2 vecPlayer = new Vector2(player.getBody().getPosition().x, player.getBody().getPosition().y);
+				int angleDamage = (int) (Math.toDegrees(Math.atan2(player.data.knockBackSource.y - vecPlayer.y , player.data.knockBackSource.x - vecPlayer.x)));
+				if(angleDamage < 0) angleDamage = (360 + angleDamage);	
+				float forceX = (((float) (Math.cos(Math.toRadians(angleDamage)))) * 200);
+				float forceY = (((float) (Math.sin(Math.toRadians(angleDamage)))) * 200);
+				
+				player.getBody().setLinearVelocity(0 , 0);
+				player.getBody().applyForceToCenter(-forceX , -forceY, true);
+			}
 		}
-		if(PlayerData.player.knockBackCD > 0) PlayerData.player.knockBackCD --;
+		if(player.data.damageCD > 0) player.data.damageCD --;
+		if(player.data.knockBackCD > 0) player.data.knockBackCD --;
+		if(player.data.knockBackCD == 0) PlayerController.PlayerControls();
+		if(inventoryActive != true)player.data.ball.BallControls();
 		
-		if(PlayerData.player.knockBackCD == 0) PlayerController.PlayerControls();
-		
-		if(inventoryActive != true)Ball.BallControls();
-		
-		BallEffect.ballEffectController();
+		Play.player.data.ballEffect.ballEffectController();
+		Play.player.data.weapon.WeaponController();
 		
 		TimeStop.TimeStopControls();
 		
-		
-		
-		
-		if(MyInput.isPressed(MyInput.BUTTON2) && playerAttackingMelee != true && playerAttackingEnemyTimer == 0)
-		{
-			playerAttackingMelee = true; 
-			playerAttackingEnemyTimer = 100;
-			//System.out.println("1");
-		}
-		//System.out.println(playerAttackingMelee);
-		
-		
-		if(playerAttackingEnemyTimer > 0) playerAttackingEnemyTimer --;
-		if(playerAttackingEnemyTimer == 80) playerAttackingMelee = false;
-		
-		
-		
-		
-		
 		for(int i = 0; i < Destructables.number; i ++) Destructables.destructables[i].DestructablesController();
-		
-		for(int i = 0; i < Loot.lootNumber; i++) Loot.loot[i].LootController();
-		
-		/*
-		if(playerAttackingEnemy)
-		{			
-			playerAttackingEnemyTimer++;
-			
-			if(MyContactListener.enemyBeingHitByPlayerAttackBoolean[cl.enemyNumberAttacked])
-			{
-				
-				if(MyContactListener.enemyBeenHitByPlayerAttackAlready[cl.enemyNumberAttacked] != true)
-				{
+		for(int i = 0; i < enemyNumber; i++)
+		{
+			//System.out.println(i + " " + enemyNumber + " " + enemy[i].data.warlock);
+			enemy[i].enemyControllerV2();
+		}
 
-					enemyNumberHitFirst = cl.enemyNumberAttacked;
-					enemyHP[cl.enemyNumberAttacked]--;
-
-
-					MyContactListener.enemyBeenHitByPlayerAttackAlready[enemyNumberHitFirst] = true;
-
-					if(enemyHP[cl.enemyNumberAttacked] == 0)
-					{
-						enemiesThatWillGetKilled = cl.enemyMaybeToRemove;
-						Player.gainedXP += 2;
-						
-					}
-				}
-			}
-		}
-		
-		// Styrer hvor ofte fireArrows Spawner		
-		if(fireArrowSpawnNumber > 0 && timeStop != true)
+		for(int i = Loot.lootNumber-1; i > -1; i--) 
 		{
-			fireArrowTimer++;
-			if(fireArrowTimer >= 150)
-			{
-				for(int i = 1; i < (fireArrowSpawnNumber + 1); i++)
-				{
-					fireArrowSpawnLocationNumber = i;
-					System.out.println("SpawnL" + fireArrowSpawnLocationNumber);
-					createFireArrow();
-				}
-				
-				fireArrowSpawnLocationNumber = 1;
-				fireArrowTimer = 0;	
-				
-				
-			}
+			Loot.loot[i].LootButtonController(getCam());
 		}
-		// Meget Vigtigt ! Sikre at fire Arrows ikke bugger !!!
-		
-		
-		if(fireArrowSensorCD[1])
-		{
-			fireArrowSensorCDTimer1++;
-			if(fireArrowSensorCDTimer1 >= 2) 
-				fireArrowSensorCD[1] = false;
-				fireArrowSensorCDTimer1 = 0;
-		}
-		if(fireArrowSensorCD[2])
-		{
-			fireArrowSensorCDTimer2++;
-			if(fireArrowSensorCDTimer2 >= 2) 
-				fireArrowSensorCD[2] = false;
-				fireArrowSensorCDTimer2 = 0;
-		}
-		if(fireArrowSensorCD[3])
-		{
-			fireArrowSensorCDTimer3++;
-			if(fireArrowSensorCDTimer3 >= 2) 
-				fireArrowSensorCD[3] = false;
-				fireArrowSensorCDTimer3 = 0;
-		}
-		*/
-		if(MyInput.isPressed(MyInput.BUTTON_INVENTORY) && inventoryActive != true)
-		{
-			PlayerData.inventory = new Inventory(PlayerData.player);
-			inventoryActive = true;
-		}
-		else if(MyInput.isPressed(MyInput.BUTTON_INVENTORY) && inventoryActive)
-		{
-			PlayerData.inventory = new Inventory(PlayerData.player);
-			inventoryActive = false;
-		}
-		
-		if(inventoryActive)PlayerData.inventory.InputUpdater(gsm);
 	}
 	public void update(float dt) {
-		
-		
-		
 		HUD.returnButton.update(dt);
-		
 		HUD.restartButton.update(dt);
-		
-		// check input
+		if(inventoryActive)player.data.inventory.Updater(dt);
 		
 		handleInput();
 		
-		if(inventoryActive)PlayerData.inventory.Updater(dt);
-		
-		if(cl.footContactsPLF2)
-			
-		{
-			PlayerData.player.getBody().setLinearVelocity(PlayerData.player.getBody().getLinearVelocity().x+movingPlatform[cl.playerOnPlatformNr].getBody().getLinearVelocity().x,
-					PlayerData.player.getBody().getLinearVelocity().y);
+		if(cl.footContactsPLF2){
+			player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x+movingPlatform[cl.playerOnPlatformNr].getBody().getLinearVelocity().x,
+					player.getBody().getLinearVelocity().y);
 		}
 		
-		// update box2d
-		//world.step(Game.STEP, 1, 1);
-		
-		PlayerData.player.update(dt);
-		
-		if(playerAttackingEnemyTimer > 90)
-		{
-			attackAnimation.getBody().setTransform(PlayerData.player.getPosition().x, PlayerData.player.getPosition().y, 0);
-			attackAnimation.update(dt);
-		}
-		else if(playerAttackingEnemyTimer > 0)
-		{
-			attackAnimationCD.getBody().setTransform(PlayerData.player.getPosition().x, PlayerData.player.getPosition().y, 0);
-			attackAnimationCD.update(dt);
-		}
-		
-		PlayerData.ball.update(dt);	
-		PlayerData.ballEffect.update(dt);
-
+		player.update(dt);
+		player.data.ball.update(dt);	
+		player.data.ballEffect.update(dt);
+		player.data.weapon.update(dt);
 		for(int i = 0; i < Loot.lootNumber; i++)Loot.loot[i].update(dt);
-		
-		for(int i = 0; i < fairyDust.size; i++){
-			fairyDust.get(i).update(dt);
-		}
-		
-		for(int i = 0; i < fairyCage.size; i++){
-			fairyCage.get(i).update(dt);	
-		}
-		
-		for(int i = 0; i < trap.size; i++){
-			trap.get(i).update(dt);	
-		}
-		
+		for(int i = 0; i < Loot.lootNumber; i++)Loot.lootButton[i].update(dt);
+		for(int i = 0; i < trap.size; i++)trap.get(i).update(dt);	
 		for(int i = 0; i < enemyNumber; i++){
 			if(!(enemy[i] == null))
 			{
 				enemy[i].update(dt);
 				for(int ii = 0; ii < enemy[i].data.missilesNumber; ii++)enemy[i].data.enemyMissiles[ii].update(dt);
-				enemy[i].enemyControllerV2();
 			}
 		}	
 		
-		for(int i = 0; i < platformNr; i++){
-			if(!(movingPlatform[i] == null))
-			{
-				movingPlatform[i].update(dt);	
-			}
-		}	
-		
-		for(int i = 1; i < fireArrowNumber; i++){
-			if(!(fireArrow[i] == null))
-			{
-				fireArrow[i].update(dt);	
-			}
-		}
-		
+		for(int i = 0; i < platformNr; i++)if(!(movingPlatform[i] == null))movingPlatform[i].update(dt);	
+		for(int i = 1; i < fireArrowNumber; i++) if(!(fireArrow[i] == null))fireArrow[i].update(dt);	
 		for(int i = 0; i < Destructables.number; i ++) Destructables.destructables[i].update(dt);
 		
-		if(cl.isPlayerTouchingPLFRight())
-		{
-			PlayerData.player.getBody().setTransform(PlayerData.player.getBody().getPosition().x - 5/ PPM, PlayerData.player.getBody().getPosition().y, 0);
-		}
-		
-		if(cl.isPlayerTouchingPLFLeft())
-		{
-			PlayerData.player.getBody().setTransform(PlayerData.player.getBody().getPosition().x + 5/ PPM, PlayerData.player.getBody().getPosition().y, 0);
-		}
-
+		if(cl.isPlayerTouchingPLFRight())player.getBody().setTransform(player.getBody().getPosition().x - 5/ PPM, player.getBody().getPosition().y, 0);
+		if(cl.isPlayerTouchingPLFLeft())player.getBody().setTransform(player.getBody().getPosition().x + 5/ PPM, player.getBody().getPosition().y, 0);
 		MovingPlatform.PlatformMove();
-		
-		
 		
 		if(fireArrowSpawnNumber > 0 && timeStop != true)
 		{
@@ -533,36 +370,7 @@ public class Play extends GameState{
 			}
 		}
 		FireArrow.FireArrowMove();
-	
 		
-		// remove fairyDust
-		Array<Body> bodies = cl.getFairyDustToRemove();
-		for(int i = 0; i < bodies.size; i++) {
-			Body b = bodies.get(i);
-			fairyDust.removeValue((FairyDust) b.getUserData(), true);
-			getWorld().destroyBody(b);
-			PlayerData.player.collectFairyDust();
-		}
-		// remove fairyCage
-		Array<Body> cBodies = cl.getFairyCageToRemove();
-		for(int i = 0; i < cBodies.size; i++) {
-			Body b = cBodies.get(i);
-			fairyCage.removeValue((FairyCage) b.getUserData(), true);
-			getWorld().destroyBody(b);
-			PlayerData.player.collectFairyCage();	
-		}
-		
-		Array<Body> f1Bodies = cl.getFireArrowToRemove1();
-		for(int i = 0; i < f1Bodies.size; i++) {
-			f1Bodies.get(i).setTransform(FASpawnSlotX[cl.fireArrowNumberToDelete1], FASpawnSlotY[cl.fireArrowNumberToDelete1], 0);
-			fireArrowInitialised[cl.fireArrowNumberToDelete1] = false;
-			System.out.println("DA 1: " + cl.fireArrowNumberToDelete1);
-		}
-		
-		bodies.clear();
-		cBodies.clear();
-		f1Bodies.clear();
-
 		getWorld().step(Game.STEP, 1, 1);
 	}
 	
@@ -583,11 +391,11 @@ public class Play extends GameState{
 		if(isPlayerTeleporting && PlayerData.ball != null)
 		{
 			cam.position.set(
-			(int) ((((PlayerData.ball.getPosition().x - PlayerData.player.getPosition().x) / 3) + PlayerData.player.getPosition().x) * PPM + Game.V_WIDTH / 15),
-			(int) ((((PlayerData.ball.getPosition().y - PlayerData.player.getPosition().y) / 3) + PlayerData.player.getPosition().y) * PPM + Game.V_HEIGHT / 15), 0);
+			(int) ((((PlayerData.ball.getPosition().x - player.getPosition().x) / 3) + player.getPosition().x) * PPM + Game.V_WIDTH / 15),
+			(int) ((((PlayerData.ball.getPosition().y - player.getPosition().y) / 3) + player.getPosition().y) * PPM + Game.V_HEIGHT / 15), 0);
 			
-			float cameraLengthX = PlayerData.ball.getPosition().x - PlayerData.player.getPosition().x;
-			float cameraLengthY = PlayerData.ball.getPosition().y - PlayerData.player.getPosition().y;
+			float cameraLengthX = PlayerData.ball.getPosition().x - player.getPosition().x;
+			float cameraLengthY = PlayerData.ball.getPosition().y - player.getPosition().y;
 			float cameraLength = (float) (Math.sqrt(Math.pow(cameraLengthX, 2.0)+ Math.pow(cameraLengthY, 2.0)));
 		
 			if(cameraLengthY > 4 || cameraLengthY < -1 )
@@ -599,8 +407,8 @@ public class Play extends GameState{
 		if(slowCamera)
 		{
 			Vector3 position = cam.position;
-			position.x += (int) ((PlayerData.player.getPosition().x * PPM + Game.V_WIDTH / 15 - position.x) * lerp);
-			position.y += (int) ((PlayerData.player.getPosition().y * PPM + Game.V_HEIGHT / 15 - position.y) * lerp);
+			position.x += (int) ((player.getPosition().x * PPM + Game.V_WIDTH / 15 - position.x) * lerp);
+			position.y += (int) ((player.getPosition().y * PPM + Game.V_HEIGHT / 15 - position.y) * lerp);
 			cam.position.set(position);
 			slowCameraNumber++;
 			lerp += 0.005;
@@ -614,14 +422,8 @@ public class Play extends GameState{
 		}
 
 		else 
-		{
-			
-			
-		}
 		*/
-		
-		
-		getCam().position.set((int) (PlayerData.player.getPosition().x * PPM + Game.V_WIDTH / 15) ,(int) (PlayerData.player.getPosition().y * PPM + Game.V_HEIGHT / 15f), 0);
+		getCam().position.set((int) (player.getPosition().x * PPM + Game.V_WIDTH / 15) ,(int) (player.getPosition().y * PPM + Game.V_HEIGHT / 15f), 0);
 		
 		getCam().update();
 		getCam().apply(Gdx.gl10);
@@ -635,70 +437,46 @@ public class Play extends GameState{
 		
 		for(int i = 0; i < Destructables.number; i ++) Destructables.destructables[i].render(sb);
 		
-		PlayerData.player.render(sb);
-		
 		sb.begin();
-		sb.draw(Player.HealthTex, (PlayerData.player.getPosition().x * 100) - 50, (PlayerData.player.getPosition().y * 100) + (PlayerData.player.getTexture().getHeight()/2), ((float) (((100) / (float) (Player.playerStartHealth)) * (PlayerData.player.health))) , 8);
-		sb.draw(Player.HealthLeftTex, (PlayerData.player.getPosition().x * 100) + 50, (PlayerData.player.getPosition().y * 100) + (PlayerData.player.getTexture().getHeight()/2),	 -((float) (100) - (((100) / (float) (Player.playerStartHealth)) * (PlayerData.player.health))) , 8);
+		boolean direction = true;
+		if(player.data.direction == -1)direction = false;
+		
+		sb.draw(player.data.weapon.weaponTex, (player.getPosition().x * 100) - (player.data.weapon.weaponTex.getWidth()/2) - (40 * Play.player.data.direction), 
+				(player.getPosition().y * 100) - (player.data.weapon.weaponTex.getHeight()/2),
+				player.data.weapon.weaponTex.getWidth() / 2, 
+				player.data.weapon.weaponTex.getHeight() / 2, 
+				player.data.weapon.weaponTex.getWidth(), 
+				player.data.weapon.weaponTex.getHeight(),  
+				1, 1, player.data.weaponRotation * player.data.direction, 0, 0, 
+				player.data.weapon.weaponTex.getWidth(), 
+				player.data.weapon.weaponTex.getHeight(), direction, false);
 		sb.end();
 		
+		player.render(sb);
 		
+		sb.begin();
+		sb.draw(player.data.HealthTex, (player.getPosition().x * 100) - 50, 
+				(player.getPosition().y * 100) + (player.data.HealthTex.getHeight()/2), 
+				((float) (((100) / (float) (player.data.healthMax)) * (player.data.health))) , 8);
+		sb.draw(player.data.HealthLeftTex, (player.getPosition().x * 100) + 50, 
+				(player.getPosition().y * 100) + (player.data.HealthLeftTex.getHeight()/2),	 
+				-((float) (100) - (((100) / (float) (player.data.healthMax)) * (player.data.health))) , 8);
+		sb.end();
 		
-		PlayerData.ball.render(sb);
-		PlayerData.ballEffect.render(sb);
-		
+		player.data.ball.render(sb);
+		player.data.ballEffect.render(sb);
+		player.data.weapon.render(sb);
 		for(int i = 0; i < Loot.lootNumber; i++)Loot.loot[i].render(sb);
-				
-		// draw fairyDust
-		for(int i = 0; i < fairyDust.size; i++){
-			fairyDust.get(i).render(sb);	
-		}
-		
-		// draw fairyCage
-		for(int i = 0; i < fairyCage.size; i++){
-			fairyCage.get(i).render(sb);	
-		}
-		
-		for(int i = 0; i < enemyNumber; i++){
-			if(!(enemy[i] == null)){
-				enemy[i].render(sb);
-				if(enemy[i].data.missile)
-					for(int ii = 0; ii < enemy[i].data.missilesNumber; ii++)enemy[i].data.enemyMissiles[ii].render(sb);
-				
-				sb.begin();
-				sb.draw(enemy[i].data.enemyHealth, (enemy[i].getPosition().x * 100) - 50, (enemy[i].getPosition().y * 100) + (enemy[i].data.getTexEnemy().getHeight()/2), ((float) (((100) / (float) (enemy[i].data.getMaxHealth())) * (enemy[i].data.getHealth()))) , 8);
-				sb.draw(enemy[i].data.enemyHealthLeft, (enemy[i].getPosition().x * 100) + 50, (enemy[i].getPosition().y * 100) + (enemy[i].data.getTexEnemy().getHeight()/2),	 -((float) (100) - (((100) / (float) (enemy[i].data.getMaxHealth())) * (enemy[i].data.getHealth()))) , 8);
-				sb.end();
-			}	
-		}
-		
-		for(int i = 0; i < trap.size; i++){
-			trap.get(i).render(sb);	
-		}
-		
-		for(int i = 0; i < platformNr; i++){
-			if(!(movingPlatform[i] == null)){
-				movingPlatform[i].render(sb);
-			}	
-		}
-		
-		if(playerAttackingEnemyTimer > 90) attackAnimation.render(sb);
-		else if(playerAttackingEnemyTimer > 0) attackAnimationCD.render(sb);
-
-		for(int i = 1; i < fireArrowNumber; i++){
-			if(!(fireArrow[i] == null)){
-				fireArrow[i].render(sb);
-			}	
-		}
-		
-		
-		
-		
+		for(int i = 0; i < Loot.lootNumber; i++)Loot.lootButton[i].render(sb);
+		for(int i = 0; i < enemyNumber; i++)enemy[i].enemyRender(sb);
+		for(int i = 0; i < trap.size; i++)trap.get(i).render(sb);	
+		for(int i = 0; i < platformNr; i++) if(!(movingPlatform[i] == null)) movingPlatform[i].render(sb);
+		for(int i = 1; i < fireArrowNumber; i++) if(!(fireArrow[i] == null)) fireArrow[i].render(sb);
 		
 		// draw HUD
 		sb.setProjectionMatrix(getHudCam().combined);
 		hud.render(sb);
-		if(inventoryActive)PlayerData.inventory.render(sb);
+		if(inventoryActive)player.data.inventory.render(sb);
 		
 		/**
 		 * SLET IKKKE! :(
@@ -755,141 +533,12 @@ public class Play extends GameState{
 	
 	public void dispose() {}
 	
-	
-	private void createPlayerSpawn(){
-		
-		try {
-			tileMap = new TmxMapLoader().load("res/maps/level" + level + ".tmx");
-		}
-		catch(Exception e) {
-			System.out.println("Cannot find file: res/maps/level" + level + ".tmx");
-			Gdx.app.exit();
-		}
-		//System.out.println(level);
-		
-		MapLayer ml = tileMap.getLayers().get("playerSpawn");
-		for(MapObject mo : ml.getObjects()){
-			BodyDef cdef = new BodyDef();
-			cdef.type = BodyType.StaticBody;
-			if(mo instanceof RectangleMapObject){
-				PlayerData.playerSpawnX =  ((RectangleMapObject) mo).getRectangle().x / PPM;
-				PlayerData.playerSpawnY =  ((RectangleMapObject) mo).getRectangle().y / PPM;
-
-			}
-			else if(mo instanceof EllipseMapObject){
-				PlayerData.playerSpawnX = ((EllipseMapObject) mo).getEllipse().x / PPM;
-				PlayerData.playerSpawnY = ((EllipseMapObject) mo).getEllipse().y / PPM;
-			}
-		}		
-	}
-	
-	private void createPlayerEnd()
-	{
-		MapLayer ml = tileMap.getLayers().get("playerEnd");
-		if(ml == null) return;
-		BodyDef bdef = new BodyDef();
-		FixtureDef fdef = new FixtureDef();
-		for(MapObject mo : ml.getObjects()){
-			bdef.type = BodyType.StaticBody;
-			if(mo instanceof RectangleMapObject){
-				float x =  ((RectangleMapObject) mo).getRectangle().x / PPM;
-				float y =  ((RectangleMapObject) mo).getRectangle().y / PPM;
-				bdef.position.set(x, y);
-			}
-			else if(mo instanceof EllipseMapObject){
-				float x =  ((EllipseMapObject) mo).getEllipse().x / PPM;
-				float y =  ((EllipseMapObject) mo).getEllipse().y / PPM;
-				bdef.position.set(x, y);
-			}
-			CircleShape cshape = new CircleShape();
-			cshape.setRadius(32 / PPM);
-			fdef.shape = cshape;
-			fdef.isSensor = true;
-			fdef.filter.categoryBits = B2DVars.BIT_END;
-			fdef.filter.maskBits = B2DVars.BIT_PLAYER;
-			Body body = getWorld().createBody(bdef);
-			body.createFixture(fdef).setUserData("end");
-			cshape.dispose();
-		}	
-	}	
-	
-	private void createTiles(){
-		// load tile map
-		try {
-			tileMap = new TmxMapLoader().load("res/maps/level" + level + ".tmx");
-		}
-		catch(Exception e) {
-			System.out.println("Cannot find file: res/maps/level" + level + ".tmx");
-			Gdx.app.exit();
-		}
-		
-		tmr = new OrthogonalTiledMapRenderer(tileMap);
-		tileSize = (int) tileMap.getProperties().get("tilewidth");
-		TiledMapTileLayer layer;
-		layer = (TiledMapTileLayer) tileMap.getLayers().get("coll");
-		createLayer (layer, B2DVars.BIT_COLL);
-	}
-	
-	private void createLayer(TiledMapTileLayer layer, short bits){
-		
-		BodyDef bdef = new BodyDef();
-		FixtureDef fdef = new FixtureDef();
-		
-		mapSize[0] = (int) (layer.getWidth() * tileSize);
-		mapSize[1] = (int) (layer.getHeight() * tileSize);
-		// go through all the cells in the layer
-		//y-axis direction
-		for(int row = 0; row < layer.getHeight(); row++){
-			//x-axis direction
-			for(int col = 0; col < layer.getWidth(); col++){
-						
-				// get cell
-				Cell cell = layer.getCell(col, row);
-						
-				// check if cells exists
-				if(cell == null) continue;
-				if(cell.getTile() == null) continue;
-						
-				// create a body + fixture from cell;
-				bdef.type = BodyType.StaticBody;
-				bdef.position.set(
-					(col + 0.5f) * tileSize / PPM, //width
-					(row + 0.5f) * tileSize / PPM //height
-				);	
-						
-				ChainShape cs = new ChainShape();
-				Vector2[] v = new Vector2[5];
-				v[0] = new Vector2(-tileSize / 2 / PPM, -tileSize / 2 / PPM);
-				v[1] = new Vector2(-tileSize / 2 / PPM, tileSize / 2 / PPM);
-				v[2] = new Vector2(tileSize / 2 / PPM, tileSize / 2 / PPM);
-				v[3] = new Vector2(tileSize / 2 / PPM, -tileSize / 2 / PPM);
-				v[4] = new Vector2(-tileSize / 2 / PPM, -tileSize / 2 / PPM);
-				cs.createChain(v);
-				fdef.friction = 2;
-				fdef.shape = cs;
-				fdef.filter.categoryBits = bits;
-				fdef.filter.maskBits = B2DVars.BIT_PLAYER | B2DVars.BIT_BALL | B2DVars.BIT_ENEMY | B2DVars.BIT_MOVINGPLATFORM | B2DVars.BIT_FIREARROW | B2DVars.BIT_OBJECTS | B2DVars.BIT_LOOT; 
-				fdef.isSensor = false;
-				getWorld().createBody(bdef).createFixture(fdef);
-				cs.dispose();
-			}
-		}
-	}
-	
 	private void createFairyDust(){
-		fairyDust = new Array<FairyDust>();
+		//fairyDust = new Array<FairyDust>();
 		MapLayer layer = null;
 		if(difficulty == 1) 
 		{
 			layer = tileMap.getLayers().get("fairyDustEasy");
-		}
-		else if(difficulty == 2) 
-		{
-			layer = tileMap.getLayers().get("fairyDustMedium");
-		}
-		else if(difficulty == 3) 
-		{
-			layer = tileMap.getLayers().get("fairyDustHard");
 		}
 		if(layer == null) return;
 		BodyDef bdef = new BodyDef();
@@ -910,19 +559,19 @@ public class Play extends GameState{
 			cshape.setRadius(15 / PPM);
 			fdef.shape = cshape;
 			fdef.isSensor = true;
-			fdef.filter.categoryBits = B2DVars.BIT_DUST;
+			fdef.filter.categoryBits = B2DVars.BIT_LOOT;
 			fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 			Body body = getWorld().createBody(bdef);
 			body.createFixture(fdef).setUserData("dust");
 			FairyDust f = new FairyDust(body);
-			fairyDust.add(f);
+			//fairyDust.add(f);
 			body.setUserData(f);
 			cshape.dispose();
 		}
 	}
 	
 	private void createFairyCage(){
-		fairyCage = new Array<FairyCage>();
+		//fairyCage = new Array<FairyCage>();
 		MapLayer ml = tileMap.getLayers().get("fairyCage");
 		
 		countCages = 0;
@@ -943,18 +592,18 @@ public class Play extends GameState{
 				countCages++;
 			}
 						
-			Player.totalFairyCage = countCages;
+			player.data.totalFairyCage = countCages;
 			CircleShape cshape = new CircleShape();
 			cshape.setRadius(32 / PPM);
 			FixtureDef fdef = new FixtureDef();
 			fdef.shape = cshape;
 			fdef.isSensor = true;
-			fdef.filter.categoryBits = B2DVars.BIT_CAGE;
+			fdef.filter.categoryBits = B2DVars.BIT_LOOT;
 			fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 			Body body = getWorld().createBody(bdef);
 			body.createFixture(fdef).setUserData("cage");
 			FairyCage c = new FairyCage(body);
-			fairyCage.add(c);
+			//fairyCage.add(c);
 			body.setUserData(c);
 			cshape.dispose();
 			
@@ -967,14 +616,6 @@ public class Play extends GameState{
 		if(difficulty == 1) 
 		{
 			ml = tileMap.getLayers().get("trapEasy");
-		}
-		else if(difficulty == 2) 
-		{
-			ml = tileMap.getLayers().get("trapMedium");
-		}
-		else if(difficulty == 3) 
-		{
-			ml = tileMap.getLayers().get("trapHard");
 		}	
 		if(ml == null) return;
 		for(MapObject mo : ml.getObjects()){
@@ -1099,9 +740,9 @@ public class Play extends GameState{
 	
 	public void startTheMap()
 	{
-		PlayerData.player.health = PlayerData.player.healthMax;
-		Player.numFairyCage = 0;
-		Player.numFairyDust = 0;
+		//PlayerData.health = PlayerData.healthMax;
+		player.data.numFairyCage = 0;
+		player.data.numFairyDust = 0;
 		MyContactListener.playerAtEnd = false;
 		Play.isPlayerTeleporting = false;
 		getCam().zoom = 1;	
@@ -1114,35 +755,6 @@ public class Play extends GameState{
 		lerp = 0.05f;
 	}
 	
-	private void createAttackAnimationStar(){
-		
-		BodyDef bdef = new BodyDef();
-		//create ball
-		bdef.position.set(PlayerData.player.getPosition().x, PlayerData.player.getPosition().y);
-		bdef.type = BodyType.DynamicBody;
-		Body body = getWorld().createBody(bdef);
-		CircleShape shape = new CircleShape();
-		shape.setRadius(12 / PPM);	
-		attackAnimation = new AttackAnimation(body);
-		body.setUserData(attackAnimation);
-		attackAnimation.getBody().setGravityScale(0f);
-		shape.dispose();
-	}	
-	
-	private void createAttackAnimationStarCD(){
-		
-		BodyDef bdef = new BodyDef();
-		//create ball
-		bdef.position.set(PlayerData.player.getPosition().x, PlayerData.player.getPosition().y);
-		bdef.type = BodyType.DynamicBody;
-		Body body = getWorld().createBody(bdef);
-		CircleShape shape = new CircleShape();
-		shape.setRadius(12 / PPM);	
-		attackAnimationCD = new AttackAnimationCD(body);
-		body.setUserData(attackAnimationCD);
-		attackAnimationCD.getBody().setGravityScale(0f);
-		shape.dispose();
-	}
 	
 	
 	
@@ -1189,14 +801,14 @@ public class Play extends GameState{
 		shape.setRadius(10 / PPM);
 				
 		fdef.shape = shape;
-		fdef.filter.categoryBits = B2DVars.BIT_FIREARROW; //| B2DVars.BIT_BALL;
+		fdef.filter.categoryBits = B2DVars.BIT_MISSILE; //| B2DVars.BIT_BALL;
 		fdef.filter.maskBits = B2DVars.BIT_COLL | B2DVars.BIT_PLAYER;
 		body.createFixture(fdef).setUserData("fireArrow");
 				
 		//create collision sensor
 		shape.setRadius(20 / PPM);
 		fdef.shape = shape;
-		fdef.filter.categoryBits = B2DVars.BIT_FIREARROW;
+		fdef.filter.categoryBits = B2DVars.BIT_MISSILE;
 		fdef.filter.maskBits = B2DVars.BIT_COLL;
 		fdef.isSensor = true;
 		body.createFixture(fdef).setUserData("fireArrowHitWall"+fireArrowNumber);
@@ -1204,7 +816,7 @@ public class Play extends GameState{
 		//create player sensor
 		shape.setRadius(12 / PPM);
 		fdef.shape = shape;
-		fdef.filter.categoryBits = B2DVars.BIT_FIREARROW;
+		fdef.filter.categoryBits = B2DVars.BIT_MISSILE;
 		fdef.filter.maskBits = B2DVars.BIT_PLAYER;
 		fdef.isSensor = true;
 		body.createFixture(fdef).setUserData("fireArrowHitPlayer"+fireArrowNumber);

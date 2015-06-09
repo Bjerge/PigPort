@@ -18,50 +18,61 @@ import com.bj.pigport.states.Play;
 
 public class EnemyMissile extends B2DSprite{
 
-	public EnemyMissile(Body body) {
+	public EnemyMissile(Body body, float stretch) {
 		super(body);
 		
 		Texture tex = Game.res.getTexture("fireBall");
 		TextureRegion[] sprites = TextureRegion.split(tex, 25, 25)[0];
 		
-		setAnimation(sprites, 1 / 12f);
+		//setAnimation(sprites, 1 / 12f);
+		setAnimationStreched(sprites, 1 / 12f, 25 * stretch, 25 * stretch);
 	}
 
-	public static void createEnemyMissiles(int number)
+	public static void createEnemyMissiles(int number, float stretch, boolean colission)
 	{
-		if(Play.enemy[Play.enemyNumber].data.missile)
+
+		Play.enemy[Play.enemyNumber].data.enemyMissiles = new EnemyMissile [number];
+					
+		for(int i = 0; i < number; i++)
 		{
-			Play.enemy[Play.enemyNumber].data.enemyMissiles = new EnemyMissile [number];
-						
-			for(int i = 0; i < number; i++)
+			BodyDef bdef = new BodyDef();
+			FixtureDef fdef = new FixtureDef();
+			CircleShape shape = new CircleShape();
+			
+			bdef.position.set( 1000, 1000);
+			bdef.type = BodyType.DynamicBody;
+			Body body = Play.getWorld().createBody(bdef);
+			
+			Play.enemy[Play.enemyNumber].data.enemyMissiles[i] = new EnemyMissile(body, stretch);
+			
+			shape.setRadius(12 / PPM * stretch);
+			fdef.shape = shape;
+			//fdef.filter.categoryBits = B2DVars.BIT_MISSILE;
+			fdef.filter.categoryBits = B2DVars.BIT_ENEMY;
+			fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+			fdef.isSensor = true;
+			body.createFixture(fdef).setUserData("enemyMissileHitPlayer" + Play.enemyNumber + "." + i);
+			
+			if(colission)
 			{
-				BodyDef bdef = new BodyDef();
-				FixtureDef fdef = new FixtureDef();
-				CircleShape shape = new CircleShape();
-				
-				bdef.position.set( 1000, 1000);
-				bdef.type = BodyType.DynamicBody;
-				Body body = Play.getWorld().createBody(bdef);
-				
-				Play.enemy[Play.enemyNumber].data.enemyMissiles[i] = new EnemyMissile(body);
-				
-				shape.setRadius(12 / PPM);
+				shape.setRadius(12 / PPM * stretch);
 				fdef.shape = shape;
-				fdef.filter.categoryBits = B2DVars.BIT_MISSILE;
-				fdef.filter.maskBits = B2DVars.BIT_PLAYER;
+				//fdef.filter.categoryBits = B2DVars.BIT_MISSILE;
+				fdef.filter.categoryBits = B2DVars.BIT_ENEMY;
+				fdef.filter.maskBits = B2DVars.BIT_COLL | B2DVars.BIT_PLAYER;
 				fdef.isSensor = true;
-				body.createFixture(fdef).setUserData("enemyMissileHitPlayer" + Play.enemyNumber);
-				
-				body.setUserData("enemyThrowingWeapon" + Play.enemyNumber);
-				Play.enemy[Play.enemyNumber].data.enemyMissiles[i].getBody().setGravityScale(0);		
-				
-				shape.dispose();
+				body.createFixture(fdef).setUserData("enemyMissileColission" + Play.enemyNumber + "." + i);
 			}
+			
+			body.setUserData("enemyThrowingWeapon" + Play.enemyNumber);
+			Play.enemy[Play.enemyNumber].data.enemyMissiles[i].getBody().setGravityScale(0);		
+			
+			shape.dispose();
 		}
 	}
 	
 	
-	public static EnemyMissile[] createEnemyMissile(EnemyMissile [] throwing, int amount){
+	public static EnemyMissile[] createEnemyMissile(EnemyMissile [] throwing, int amount, float stretch){
 		
 		throwing = new EnemyMissile [amount];
 		
@@ -75,7 +86,7 @@ public class EnemyMissile extends B2DSprite{
 			bdef.type = BodyType.DynamicBody;
 			Body body = Play.getWorld().createBody(bdef);
 			
-			throwing[i] = new EnemyMissile(body);
+			throwing[i] = new EnemyMissile(body, stretch);
 			
 			shape.setAsBox(22/PPM, 22/PPM);
 			fdef.shape = shape;
